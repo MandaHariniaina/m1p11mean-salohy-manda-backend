@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const chai = require('chai');
 const { expect } = chai;
 const sinon = require('sinon');
-const Groupe = require('../models/Groupe');
+const Groupe = require('../../models/Groupe');
 
 // Set up Mongoose connection before tests
 before((done) => {
