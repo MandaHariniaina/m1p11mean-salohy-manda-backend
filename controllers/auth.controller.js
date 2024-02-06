@@ -2,7 +2,8 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Groupe = db.groupe;
-const logger = require("../logger")
+const { logger } = require("../config")
+const { mailService } = require("../services");
 
 const mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
@@ -28,6 +29,7 @@ exports.signup = async (req, res) => {
             user.groupes = [groupe._id];
         }
         await user.save({ session: session });
+        await mailService.sendConfirmationCompteMail(user.email);
         await session.commitTransaction();
         await session.endSession();
         return res.send({ message: "Utilsateur inscrit" });
