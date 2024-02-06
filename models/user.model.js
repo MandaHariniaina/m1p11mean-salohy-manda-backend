@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         required: [true, "Mot de passe obligatoire"],
         trim: true,
     },
+    est_verifie: {
+        type: Boolean,
+        default: false
+    },
     salt: {
         type: String,
         required: true,
