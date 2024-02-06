@@ -64,7 +64,8 @@ exports.signin = async (req, res) => {
     var authorities = [];
 
     for (let i = 0; i < user.groupes.length; i++) {
-        authorities.push("GROUPE_" + user.groupes[i].nom.toUpperCase());
+        let groupe = await Groupe.findById(user.groupes[i]._id)
+        authorities.push("GROUPE_" + groupe.nom.toUpperCase());
     }
 
     req.session.token = token;
