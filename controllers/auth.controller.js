@@ -2,29 +2,40 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Groupe = db.groupe;
+const logger = require("../logger")
 
+const mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = async (req, res) => {
-    const user = new User({
-        email: req.body.email,
-        // password: bcrypt.hashSync(req.body.password, 8),
-        password: bcrypt.hashSync(req.body.password),
-    });
+    let body = req.body;
+    body.password = bcrypt.hashSync(body.password);
+    body.salt = "random-salt"
+    // body.password = bcrypt.hashSync(body.password, 8),
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    let user = new User(body);
 
-    user = await user.save();
+    try{
+        user = await user.save({ session: session });
 
-    if (req.body.groupes) {
-        let groupes = await Groupe.find({ name: { $in: req.body.groupes } });
-        user.groupes = groupes.map((groupe) => groupe._id);
-        await user.save();
-        return res.send({ message: "Utilsateur enregistré" });
-    } else {
-        let groupe = await Groupe.findOne({ name: "client" });
-        user.groupes = [groupe._id];
-        user = await user.save()
-        return res.send({ message: "Client enregistré" })
+        if (req.body.groupes) {
+            let groupes = await Groupe.find({ nom: { $in: req.body.groupes } });
+            user.groupes = groupes.map((groupe) => groupe._id);
+        } else {
+            let groupe = await Groupe.findOne({ nom: "client" });
+            user.groupes = [groupe._id];
+        }
+        await user.save({ session: session });
+        await session.commitTransaction();
+        await session.endSession();
+        return res.send({ message: "Utilsateur inscrit" });
+    } catch(error){
+        logger.error(error);
+        await session.abortTransaction();
+        await session.endSession();
+        return res.status(500).send({ message: "Erreur survenue pendant l'inscription de l'utilisateur" });
     }
 };
 
