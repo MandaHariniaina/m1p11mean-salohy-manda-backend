@@ -16,6 +16,14 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function (req, res, next) {
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, Content-Type, Accept"
+    );
+    next();
+});
+
 app.use(
     cookieSession({
         name: "mean-stack-session",
@@ -43,6 +51,7 @@ db.mongoose.connect(`${process.env.MONGO_URI}`).then(() => {
 const Groupe = db.groupe;
 
 async function initial(){
+    console.log("Création des groupes d'utilisateur");
     db.GROUPES.forEach(async (groupe) => {
         const groupeId = await Groupe.exists({nom: groupe});
         if(groupeId == null){
@@ -50,15 +59,18 @@ async function initial(){
             await new Groupe({nom: groupe}).save();
         }
     });
+    console.log("Groupes créées")
 }
 /* ---------- */
 
 /* Routing */
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/index.route');
+var userRouter = require('./routes/user.route');
+var authRouter = require('./routes/auth.route');
 
 app.use('/api/', indexRouter);
-app.use('/api/users', usersRouter);
+app.use('/api/user', userRouter);
+app.use('/api/auth', authRouter);
 /* ---------- */
 
 module.exports = app;

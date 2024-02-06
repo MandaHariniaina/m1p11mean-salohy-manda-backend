@@ -1,9 +1,11 @@
+const { authJwt } = require("../middlewares");
+const controller = require("../controllers/user.controller");
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function (req, res, next) {
-	res.send('respond with a resource');
-});
+router.get('/test/all', controller.allAccess);
+router.get('/test/client', [authJwt.verifyToken], controller.clientAccess);
+router.get('/test/employe', [authJwt.verifyToken, authJwt.estEmploye], controller.employeAccess);
+router.get('/test/admin', [authJwt.verifyToken, authJwt.estAdmin], controller.adminAccess);
 
 module.exports = router;

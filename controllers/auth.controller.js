@@ -9,7 +9,8 @@ var bcrypt = require("bcryptjs");
 exports.signup = async (req, res) => {
     const user = new User({
         email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8),
+        // password: bcrypt.hashSync(req.body.password, 8),
+        password: bcrypt.hashSync(req.body.password),
     });
 
     user = await user.save();

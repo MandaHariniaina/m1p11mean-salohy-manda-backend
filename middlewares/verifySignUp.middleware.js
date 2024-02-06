@@ -2,7 +2,7 @@ const db = require("../models");
 const GROUPES = db.GROUPES;
 const User = db.user;
 
-checkDuplicateUsernameOrEmail = async (req, res, next) => {
+checkDuplicateEmail = async (req, res, next) => {
     // Username
     let userExists = await User.findOne({ email: req.body.email }).exists()
     if (userExists) {
@@ -12,7 +12,7 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
     next();
 };
 
-checkGroupeExist = (req, res, next) => {
+checkGroupesExist = (req, res, next) => {
     if (req.body.groupes) {
         for (let i = 0; i < req.body.groupes.length; i++) {
             if (!GROUPES.includes(req.body.groupe[i])) {
@@ -28,8 +28,8 @@ checkGroupeExist = (req, res, next) => {
 };
 
 const verifySignUp = {
-    checkDuplicateUsernameOrEmail,
-    checkRolesExisted
+    checkDuplicateEmail,
+    checkGroupesExist
 };
 
 module.exports = verifySignUp;
