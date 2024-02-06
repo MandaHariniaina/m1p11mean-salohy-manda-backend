@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
+const crypo = require('crypto');
 
 const userSchema = new mongoose.Schema({
     nom: {
@@ -29,7 +30,14 @@ const userSchema = new mongoose.Schema({
         required: [true, "Mot de passe obligatoire"],
         trim: true,
     },
-    groups: [String],
+    salt: {
+        type: String,
+        required: true,
+    },
+    groups: [{
+        type: SchemaTypes.ObjectId,
+        ref: "Groupe"
+    }],
     contacts: {
         type: Map,
         of: String,

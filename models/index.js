@@ -5,8 +5,8 @@ const db = {};
 
 db.mongoose = mongoose;
 
-db.user = require("./User");
-db.groupe = require("./Groupe");
+db.user = require("./user.model");
+db.groupe = require("./groupe.model");
 
 db.GROUPES = ["client", "employe", "administrateur"];
 
