@@ -4,7 +4,7 @@ const User = db.user;
 
 checkDuplicateEmail = async (req, res, next) => {
     // Username
-    let userExists = await User.findOne({ email: req.body.email }).exists()
+    let userExists = await User.exists({ email: req.body.email })
     if (userExists) {
         res.status(400).send({ message: "L'adresse email est déjà utilisée" });
         return;
