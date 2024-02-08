@@ -24,6 +24,11 @@ const rendezvousSchema = mongoose.Schema({
     }],
     date: Date,
     dateFin: Date,
+    vers: {
+        type: Number,
+        default: 1.0,
+        min: 1.0,
+    },
 },
 {
     timestamps: true,
