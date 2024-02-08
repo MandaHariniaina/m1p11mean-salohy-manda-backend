@@ -1,23 +1,25 @@
 const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
-const require = require('mongoose')
+
 
 const rendezvousSchema = mongoose.Schema({
-    client: SchemaTypes.ObjectId,
-    montant: Number,
-    ref: 'User',
+    client:{
+        type:SchemaTypes.ObjectId,
+        ref:'user'
+    },
+    montant:{type:Number},
     gestionnaire: {
         type: SchemaTypes.ObjectId,
-        ref: 'User',
+        ref: 'user',
     },
     prestations: [{
         service: {
             type: SchemaTypes.ObjectId,
-            ref: 'Service',
+            ref: 'service',
         },
         gestionnaire: {
             type: SchemaTypes.ObjectId,
-            ref: 'User',
+            ref: 'user',
         },
     }],
     date: Date,
