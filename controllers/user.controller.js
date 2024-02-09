@@ -1,3 +1,4 @@
+const { log } = require("winston");
 const userService=require("../services/userService");
 
 
@@ -33,6 +34,7 @@ exports.addUser=async(req,res)=>{
         res.status(200).send({data:user});
     }
     catch(err){
+       
         res.status(500).send({error:err.message});
     }
 }
