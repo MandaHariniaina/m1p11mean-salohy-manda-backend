@@ -20,7 +20,7 @@ exports.adminAccess = (req, res) => {
 exports.allUser= async (req,res)=>{
     try{
         const dataUser=await userService.getAllUser();
-        res.status(200).send({data:user});
+        res.status(200).send({data:dataUser});
     }
     catch(err){
         res.status(500).send({error:err.message});
