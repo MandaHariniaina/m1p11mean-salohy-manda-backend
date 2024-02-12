@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Mot de passe obligatoire"],
         trim: true,
     },
-    est_verifie: {
+    estVerifie: {
         type: Boolean,
         default: false
     },
@@ -60,11 +60,16 @@ const userSchema = new mongoose.Schema({
             ref: 'User',
         }],
     }],
+    horaireTravail: {
+        entree: { type: Date },
+        sortie: { type: Date },
+        duree: { type: Number },
+    },
     vers: {
         type: Number,
         default: 1.0,
         min: 1.0,
-    }
+    },
 },
 {
     timestamps: true,
