@@ -3,10 +3,22 @@ const config = require("../config/auth.config.js");
 const db = require("../models/index.js");
 const Groupe = require("../models/groupe.model.js");
 const User = db.user;
-const Role = db.role;
+const { TokenExpiredError } = jwt;
+
+
+const catchError = (err, res) => {
+    if(err instanceof TokenExpiredError) {
+        return res.status(401).send({ message: "Non autorisé! La jeton d'accès est expiré!" })
+    }
+
+    return res.status(403).send({ message: "Non autorisé!" })
+}
 
 verifyToken = (req, res, next) => {
-    let token = req.session.token;
+    // JWT
+    // let token = req.session.token;
+    // x-access
+    let token = req.headers["x-access-token"];
 
     if (!token) {
         return res.status(403).send({ message: "Aucun token fourni!" });
@@ -36,7 +48,7 @@ estAdmin = (req, res, next) => {
             }
             res.status(403).send({ message: "L'utilisateur doit être un administrateur!" });
             return;
-        }).then((err) => {
+        }).catch((err) => {
             res.status(500).send({ message: err });
             return;
         })
@@ -57,7 +69,7 @@ estEmploye = (req, res, next) => {
             }
             res.status(403).send({ message: "L'utilisateur doit être un employé!" });
             return;
-        }).then((err) => {
+        }).catch((err) => {
             res.status(500).send({ message: err });
             return;
         })

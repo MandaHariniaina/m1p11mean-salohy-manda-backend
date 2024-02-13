@@ -12,30 +12,32 @@ var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
     res.header(
         "Access-Control-Allow-Headers",
-        "Origin, Content-Type, Accept"
+        // "Origin, Content-Type, Accept"
+        "x-access-token, Origin, Content-Type, Accept"
     );
     next();
 });
 
-app.use(
-    cookieSession({
-        name: "mean-stack-session",
-        keys: [process.env.COOKIE_SECRET],
-        httpOnly: true
-    })
-);
+// JWT
+// app.use(
+//     cookieSession({
+//         name: "mean-stack-session",
+//         keys: [process.env.COOKIE_SECRET],
+//         httpOnly: true
+//     })
+// );
 
 var corsOptions = {
     origin: process.env.ORIGIN
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 /* ------------ */
 
