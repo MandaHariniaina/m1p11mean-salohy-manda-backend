@@ -41,7 +41,7 @@ estAdmin = (req, res, next) => {
     User.findById(req.userId).exec().then((user) => {
         Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
             for (let i = 0; i < userGroupes.length; i++) {
-                if (userGroupes[i].name === "administrateur") {
+                if (userGroupes[i].nom === "administrateur") {
                     next();
                     return;
                 }
@@ -61,8 +61,9 @@ estAdmin = (req, res, next) => {
 estEmploye = (req, res, next) => {
     User.findById(req.userId).exec().then((user) => {
         Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
+            console.group(userGroupes);
             for (let i = 0; i < userGroupes.length; i++) {
-                if (userGroupes[i].name === "employe") {
+                if (userGroupes[i].nom === "employe") {
                     next();
                     return;
                 }
