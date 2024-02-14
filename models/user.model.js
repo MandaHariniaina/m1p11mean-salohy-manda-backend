@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    estActif: {
+        type: Boolean,
+        default: false,
+    },
     salt: {
         type: String,
         required: true,

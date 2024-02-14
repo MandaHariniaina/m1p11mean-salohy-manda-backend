@@ -9,13 +9,15 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = async (req, res) => {
-    let body = req.body;
-    body.password = bcrypt.hashSync(body.password);
-    body.salt = "random-salt"
-    // body.password = bcrypt.hashSync(body.password, 8),
     const session = await mongoose.startSession();
     session.startTransaction();
-    let user = new User(body);
+    let user = new User({ 
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password),
+        salt: "random-salt",
+    });
 
     try {
         user = await user.save({ session: session });

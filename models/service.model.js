@@ -4,22 +4,25 @@ const slugify = require('slugify');
 const serviceSchema = new mongoose.Schema({
     nom: {
         type: String,
-        required: true,
+        required: [true, 'Le nom du service est requis'],
         trim: true,
+        lowercase: true,
+        unique: true,
+        collation: { locale: 'fr', strength: 2 }
     },
     prix: {
         type: Number,
-        required: true,
+        required: [true, 'Le prix du service est requis'],
         min: 0,
     },
     duree: {
         type: Number,
-        required: true,
+        required: [true, 'La durée du service doit être spécifiée'],
         min: 0,
     },
     commission: {
         type: Number,
-        required: true,
+        required: [true, 'La commission doit être spécifiée'],
         min: 0,
         max: 100,
     },
