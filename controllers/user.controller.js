@@ -20,7 +20,7 @@ exports.adminAccess = (req, res) => {
 
 exports.allUser= async (req,res)=>{
     try{
-        const dataUser=await userService.getAllUser();
+        const dataUser=await userService.getEmploye();
         res.status(200).send({data:dataUser});
     }
     catch(err){
