@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "live": "nodemon ./bin/www",
-    "test-models": "mocha --timeout 5000 --require ./tests/models/test-setup.js ./tests/models/groupe.test.js"
+    "test-model-groupe": "mocha --timeout 5000 --require ./tests/models/test-setup.js ./tests/models/groupe.test.js",
+    "test-model-service": "mocha --timeout 5000 --require ./tests/models/test-setup.js ./tests/models/service.test.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
