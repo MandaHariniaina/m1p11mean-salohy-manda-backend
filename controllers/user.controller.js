@@ -19,9 +19,13 @@ exports.adminAccess = (req, res) => {
 };
 
 exports.allUser= async (req,res)=>{
+    const {page=1,limit=10}=req.query;
     try{
-        const dataUser=await userService.getEmploye();
-        res.status(200).send({data:dataUser});
+        const dataUser=await userService.getPaginateEmploye(page,limit);
+        const count=(await userService.getEmploye()).length;
+        console.log(count);
+        res.status(200).send({data:dataUser,totalPages: Math.ceil(count / limit),
+        currentPage: page});
     }
     catch(err){
         res.status(500).send({error:err.message});
