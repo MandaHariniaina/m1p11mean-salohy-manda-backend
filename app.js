@@ -66,13 +66,12 @@ async function initial(){
 /* ---------- */
 
 /* Routing */
-var indexRouter = require('./routes/index.route');
-var userRouter = require('./routes/user.route');
-var authRouter = require('./routes/auth.route');
+var router = require('./routes');
 
-app.use('/api/', indexRouter);
-app.use('/api/user', userRouter);
-app.use('/api/auth', authRouter);
+app.use('/api/', router.index);
+app.use('/api/user', router.user);
+app.use('/api/auth', router.auth);
+app.use('/api/service', router.service);
 /* ---------- */
 
 module.exports = app;
