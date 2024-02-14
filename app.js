@@ -6,6 +6,8 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 const db = require("./models");
 require('dotenv').config();
+const { setLocale } = require('yup');
+const { fr } = require('yup-locales');
 
 /* App configuration  */
 var app = express();
@@ -63,6 +65,10 @@ async function initial(){
     });
     console.log("Groupes créées")
 }
+/* ---------- */
+
+/* yup local */
+setLocale(fr);
 /* ---------- */
 
 /* Routing */
