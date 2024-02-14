@@ -6,6 +6,9 @@ const serviceSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        lowercase: true,
+        unique: true,
+        collation: { locale: 'fr', strength: 2 }
     },
     prix: {
         type: Number,
