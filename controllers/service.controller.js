@@ -6,7 +6,6 @@ exports.delete = async (req, res) => {
         await serviceService.delete(req.body.id);
         return res.status(200).send({ message: "Service supprimé." })
     } catch (error) {
-        console.log(error);
         if (error instanceof mongooseError.ValidationError) {
             return res.status(400).send({ message: error.message });
         } else if (error instanceof mongooseError.DocumentNotFoundError) {
