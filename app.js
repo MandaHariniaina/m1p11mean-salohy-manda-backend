@@ -80,10 +80,12 @@ async function initial(){
 var indexRouter = require('./routes/index.route');
 var userRouter = require('./routes/user.route');
 var authRouter = require('./routes/auth.route');
+var serviceRouter=require('./routes/service.route');
 
 app.use('/api/', indexRouter);
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/service',serviceRouter);
 app.listen(`${process.env.PORT}`, () => {   
 	console.log('Server is running on port'+`${process.env.PORT}`); 
 });
