@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
 
 const prestationSchema = mongoose.Schema({
-    montant_total: Number,
+    montantTotal: Number,
     client: {
         type: SchemaTypes.ObjectId,
         ref: 'user',
@@ -33,11 +33,11 @@ const prestationSchema = mongoose.Schema({
 
 prestationSchema.pre('save', function (next) {
     if (this.isModified('details')) {
-        montant_total = 0;
+        montantTotal = 0;
         this.details.forEach(function (detailPrestation) {
-            montant_total += detailPrestation.montant;
+            montantTotal += detailPrestation.montant;
         })
-        this.montant_total = this.montant_total;
+        this.montantTotal = this.montantTotal;
     }
     next();
 });

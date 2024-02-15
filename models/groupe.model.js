@@ -24,6 +24,16 @@ groupeSchema.pre('save', function (next) {
     next();
 });
 
+groupeSchema.static('setDefaultData', function(){
+    const GROUPES = ["client", "employe", "administrateur"];
+    GROUPES.forEach(async (groupe) => {
+        const groupeId = await this.exists({nom: groupe});
+        if(groupeId == null){
+            await this.create({nom: groupe});
+        }
+    });
+});
+
 const Groupe = mongoose.model('Groupe', groupeSchema);
 
 module.exports = Groupe;

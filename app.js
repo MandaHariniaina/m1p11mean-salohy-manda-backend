@@ -6,13 +6,16 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 const db = require("./models");
 require('dotenv').config();
+const { setLocale } = require('yup');
+const { fr } = require('yup-locales');
 
 /* App configuration  */
 var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+//app.use(express.urlencoded({ extended: false }));
 app.use(cors({
     origin: true, // "true" will copy the domain of the request back
                   // to the reply. If you need more control than this
@@ -26,29 +29,34 @@ app.use(cors({
     methods: 'POST,GET,PUT,OPTIONS,DELETE' // Make sure you're not blocking
                                            // pre-flight OPTIONS requests
 }))
+
+app.use(express.urlencoded({ extended: true }));
+
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
     res.header(
         "Access-Control-Allow-Headers",
-        "Origin, Content-Type, Accept"
+        // "Origin, Content-Type, Accept"
+        "x-access-token, Origin, Content-Type, Accept"
     );
     next();
 });
 
-app.use(
-    cookieSession({
-        name: "mean-stack-session",
-        keys: [process.env.COOKIE_SECRET],
-        httpOnly: true
-    })
-);
+// JWT
+// app.use(
+//     cookieSession({
+//         name: "mean-stack-session",
+//         keys: [process.env.COOKIE_SECRET],
+//         httpOnly: true
+//     })
+// );
 
 var corsOptions = {
     origin: process.env.ORIGIN
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 /* ------------ */
 
@@ -76,8 +84,13 @@ async function initial(){
 }
 /* ---------- */
 
+/* yup local */
+setLocale(fr);
+/* ---------- */
+
 /* Routing */
-var indexRouter = require('./routes/index.route');
+
+/*var indexRouter = require('./routes/index.route');
 var userRouter = require('./routes/user.route');
 var authRouter = require('./routes/auth.route');
 var serviceRouter=require('./routes/service.route');
@@ -88,7 +101,16 @@ app.use('/api/auth', authRouter);
 app.use('/api/service',serviceRouter);
 app.listen(`${process.env.PORT}`, () => {   
 	console.log('Server is running on port'+`${process.env.PORT}`); 
-});
+});*/
+
+var router = require('./routes');
+
+app.use('/api/', router.index);
+app.use('/api/user', router.user);
+app.use('/api/auth', router.auth);
+app.use('/api/service', router.service);
+
+
 /* ---------- */
 
 module.exports = app;

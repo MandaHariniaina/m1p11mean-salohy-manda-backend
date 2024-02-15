@@ -15,9 +15,9 @@ checkDuplicateEmail = async (req, res, next) => {
 checkGroupesExist = (req, res, next) => {
     if (req.body.groupes) {
         for (let i = 0; i < req.body.groupes.length; i++) {
-            if (!GROUPES.includes(req.body.groupe[i])) {
+            if (!GROUPES.includes(req.body.groupes[i])) {
                 res.status(400).send({
-                    message: `Echec! Le groupe ${req.body.groupe[i]} n'existe pas!`
+                    message: `Echec! Le groupe ${req.body.groupes[i]} n'existe pas!`
                 });
                 return;
             }
