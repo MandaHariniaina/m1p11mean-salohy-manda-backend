@@ -1,6 +1,6 @@
 const customLabels = {
-    totalDocs: 'itemCount',
-    docs: 'items',
+    totalDocs: 'dataCount',
+    docs: 'data',
     limit: 'limit',
     page: 'currentPage',
     totalPages: 'totalPages',
