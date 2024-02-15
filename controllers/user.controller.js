@@ -1,6 +1,6 @@
 const { log } = require("winston");
 const userService=require("../services/userService");
-
+const userModel=require("../models/user.model")
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Contenu public.");
@@ -26,6 +26,27 @@ exports.allUser= async (req,res)=>{
         console.log(count);
         res.status(200).send({data:dataUser,totalPages: Math.ceil(count / limit),
         currentPage: page});
+    }
+    catch(err){
+        res.status(500).send({error:err.message});
+    }
+}
+
+exports.update_status=async(req,res)=>{
+    try{
+        console.log(req.body);
+        const user_update_status=await userService.updateStatusEmploye(req.body._id,req.query.status)
+        res.status(200).send({user:user_update_status});
+    }
+    catch(err){
+        res.status(500).send({error:err.message});
+    }
+}
+
+exports.update_user=async(req,res)=>{
+    try{
+        const user_update=await userService.updateUser(req.body);
+        res.status(200).send({user:user_update});
     }
     catch(err){
         res.status(500).send({error:err.message});
