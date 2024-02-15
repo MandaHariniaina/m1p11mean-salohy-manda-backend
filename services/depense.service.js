@@ -1,5 +1,6 @@
 const Depense = require('../models/depense.model');
 const mongoose = require('mongoose');
+const config = require('../config');
 
 exports.findAll = async(page, limit, dateDebut, dateFin) => {
     let dateFilter;
@@ -21,7 +22,7 @@ exports.findAll = async(page, limit, dateDebut, dateFin) => {
     }
     let depenses;
     if (dateFilter){
-        depenses = await Depense.paginate({ createdAt: dateFilter }, {page, limit, sort: { createdAt: 'desc'}});
+        depenses = await Depense.paginate({ createdAt: dateFilter }, {page, limit, sort: { createdAt: 'desc'}, customLabels: config.mongoosePaginate.customLabels});
     } else {
         depenses = await Depense.paginate({}, {page, limit, sort: { createdAt: 'desc'}});
     }
