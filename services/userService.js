@@ -14,7 +14,7 @@ exports.getPaginateEmploye=async(page,limit)=>{
 }
 
 exports.updateStatusEmploye=async(user_id,status)=>{
-    return await userModel.findByIdAndUpdate(user_id,{'est_verifie':status},{
+    return await userModel.findByIdAndUpdate(user_id,{'estActif':status},{
         new:true
     }).select({"password":0});
 }//modification status utilisateur

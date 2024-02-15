@@ -1,6 +1,6 @@
 
-/*const controller = require("../controllers/services.controller");
-var express = require('express');
+//const controller = require("../controllers/services.controller");
+/*var express = require('express');
 var router = express.Router();
 
 router.post('/create', controller.createService);
@@ -14,6 +14,8 @@ var router = express.Router();
 
 router.delete('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceDeleteRequestBody], controller.delete);
 router.put('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceUpdateRequestBody], controller.update);
-router.post('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceCreateRequestBody], controller.create);
-
+//router.post('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceCreateRequestBody], controller.create);
+router.post('/create', controller.createService);
+router.get('/getAll',controller.findAllService);
+router.get('/getAllPaginate',controller.finAllPaginateService);
 module.exports = router;
