@@ -7,8 +7,10 @@ const { mailService } = require("../services");
 const mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { log } = require("winston");
 
 exports.signup = async (req, res) => {
+
     const session = await mongoose.startSession();
     session.startTransaction();
     let user = new User({ 
@@ -20,8 +22,9 @@ exports.signup = async (req, res) => {
     });
 
     try {
-        user = await user.save({ session: session });
 
+        user = await user.save({ session: session });
+        //console.log("tonga");
         if (req.body.groupes) {
             let groupes = await Groupe.find({ nom: { $in: req.body.groupes } });
             user.groupes = groupes.map((groupe) => groupe._id);
@@ -29,12 +32,15 @@ exports.signup = async (req, res) => {
             let groupe = await Groupe.findOne({ nom: "client" });
             user.groupes = [groupe._id];
         }
+       
         await user.save({ session: session });
         await mailService.sendConfirmationCompteMail(user.email);
         await session.commitTransaction();
         await session.endSession();
         return res.send({ message: "Utilsateur inscrit" });
+
     } catch (error) {
+
         logger.error(error.message);
         await session.abortTransaction();
         await session.endSession();
