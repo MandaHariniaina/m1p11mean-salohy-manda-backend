@@ -22,6 +22,24 @@ exports.createService=async(req,res)=>{
     }  
 }
 
+exports.updateService=async(req,res)=>{
+    const session=await mongoose.startSession();
+    session.startTransaction();
+    let service=new Service(req.body);
+    try{
+        await service.save({session:session});
+        await session.commitTransaction();
+        await session.endSession();
+        return res.status(200).send({message:"success"});
+    }
+    catch(err){
+        console.log(err.message);
+        await session.abortTransaction();
+        await session.endSession();
+        return res.status(500).send({message:"erreur d'ajout de service"});
+    }  
+}
+
 exports.findAllService=async(req,res)=>{
     try{
         const data_services=await serviceService.getAllService();
