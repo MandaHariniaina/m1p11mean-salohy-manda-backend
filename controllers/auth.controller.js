@@ -44,18 +44,27 @@ exports.signup = async (req, res) => {
 
 exports.signin = async (req, res) => {
     let user = await User.findOne({ email: req.body.email });
+    // Check email
     if (!user) {
         return res.status(401).send({ message: "Identifiant ou mot de passe erroné" });
     }
-
+    // Check password
     let passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password,
     );
-
     if (!passwordIsValid) {
         return res.status(401).send({ message: "Identifiant ou mot de passe erroné" });
     }
+    // Check estVerifie
+    if (user.estVerifie == false){
+        return res.status(403).send({ message: "Compte non vérifié." });
+    }
+    // Check estActif
+    if (user.estActif == false){
+        return res.status(403).send({ message: "Compte non activé." });
+    }
+    // Generate JWT token
     const token = jwt.sign({ id: user.id }, 
         config.secret, 
         { 
