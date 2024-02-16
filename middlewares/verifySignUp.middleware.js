@@ -5,20 +5,6 @@ const yup = require('yup');
 
 validateRequestBody = async (req, res, next) => {
     try{
-        // Minimum length of 8 characters
-        const minLength = 8;
-        // At least one lowercase letter
-        const lowercaseRegex = /[a-z]/;
-        // At least one uppercase letter
-        const uppercaseRegex = /[A-Z]/;
-        // At least one special character (non-alphanumeric)
-        const specialCharRegex = /[!@#$%^&*()_+={}\[\]:;<>,.?~\-]/;
-        // At least one digit
-        const digitRegex = /\d/;
-        const passwordRegex = new RegExp(
-            `^(?=.*${lowercaseRegex.source})(?=.*${uppercaseRegex.source})(?=.*${specialCharRegex.source})(?=.*${digitRegex.source}).{${minLength},}$`
-        );
-
         const signUpSchema = yup.object().shape({
             nom: yup.string().lowercase().required(),
             prenom: yup.string().lowercase().required(),
