@@ -1,9 +1,18 @@
 const yup = require('yup');
+const { isValidObjectId } = require('mongoose');
 
 exports.validateServiceDeleteRequestBody = async (req, res, next) => {
     try{
         const serviceUpdateSchema = yup.object().shape({
-            id: yup.string().length(24)
+            id: yup
+                .string()
+                .required()
+                .transform((value) => {
+                    if (isValidObjectId(value)){
+                        return value;
+                    }
+                    return '';
+                })
         });
         const validatedBody = await serviceUpdateSchema.validate(req.body);
         req.body = validatedBody;
@@ -17,7 +26,15 @@ exports.validateServiceDeleteRequestBody = async (req, res, next) => {
 exports.validateServiceUpdateRequestBody = async (req, res, next) => {
     try{
         const serviceUpdateSchema = yup.object().shape({
-            id: yup.string().length(24),
+            id: yup
+                .string()
+                .required()
+                .transform((value) => {
+                    if (isValidObjectId(value)){
+                        return value;
+                    }
+                    return '';
+                }),
             nom: yup.string().required(),
             prix: yup.number().required().min(0),
             duree: yup.number().required().min(0),

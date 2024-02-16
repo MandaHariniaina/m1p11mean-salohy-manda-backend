@@ -21,37 +21,47 @@ verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
 
     if (!token) {
-        return res.status(403).send({ message: "Aucun token fourni!" });
+        return res.status(403).send({ message: "Non authentifié!" });
     }
 
     jwt.verify(token,
         config.secret,
-        (err, decoded) => {
+        async (err, decoded) => {
             if (err) {
                 return res.status(401).send({
                     message: "Non autorisé!",
                 });
             }
             req.userId = decoded.id;
+            let user;
+            try {
+                user = await User.findById(decoded.id);
+                req.user = user;
+            } catch (error){
+                res.status(500).send({ message: err.message });
+                return;
+            }
+            if (user.estVerifie == false){
+                return res.status(403).send({ message: "Compte non vérifié" });
+            } else if (user.estActif == false){
+                return res.status(403).send({ message: "Compte non activé" })
+            }
             next();
         });
 };
 
+
 estAdmin = (req, res, next) => {
-    User.findById(req.userId).exec().then((user) => {
-        Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
-            for (let i = 0; i < userGroupes.length; i++) {
-                if (userGroupes[i].nom === "administrateur") {
-                    next();
-                    return;
-                }
+    let user = req.user;
+    Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
+        for (let i = 0; i < userGroupes.length; i++) {
+            if (userGroupes[i].nom === "administrateur") {
+                next();
+                return;
             }
-            res.status(403).send({ message: "L'utilisateur doit être un administrateur!" });
-            return;
-        }).catch((err) => {
-            res.status(500).send({ message: err });
-            return;
-        })
+        }
+        res.status(403).send({ message: "L'utilisateur doit être un administrateur!" });
+        return;
     }).catch((err) => {
         res.status(500).send({ message: err });
         return;
@@ -59,21 +69,17 @@ estAdmin = (req, res, next) => {
 };
 
 estEmploye = (req, res, next) => {
-    User.findById(req.userId).exec().then((user) => {
-        Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
-            console.group(userGroupes);
-            for (let i = 0; i < userGroupes.length; i++) {
-                if (userGroupes[i].nom === "employe") {
-                    next();
-                    return;
-                }
+    let user = req.user;
+    console.log(req.user);
+    Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
+        for (let i = 0; i < userGroupes.length; i++) {
+            if (userGroupes[i].nom === "employe") {
+                next();
+                return;
             }
-            res.status(403).send({ message: "L'utilisateur doit être un employé!" });
-            return;
-        }).catch((err) => {
-            res.status(500).send({ message: err });
-            return;
-        })
+        }
+        res.status(403).send({ message: "L'utilisateur doit être un employé!" });
+        return;
     }).catch((err) => {
         res.status(500).send({ message: err });
         return;

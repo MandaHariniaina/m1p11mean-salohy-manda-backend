@@ -9,8 +9,7 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { log } = require("winston");
 
-exports.signup = async (req, res) => {
-
+exports.signupEmploye = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     let user = new User({ 
@@ -22,17 +21,38 @@ exports.signup = async (req, res) => {
     });
 
     try {
-
         user = await user.save({ session: session });
-        //console.log("tonga");
-        if (req.body.groupes) {
-            let groupes = await Groupe.find({ nom: { $in: req.body.groupes } });
-            user.groupes = groupes.map((groupe) => groupe._id);
-        } else {
-            let groupe = await Groupe.findOne({ nom: "client" });
-            user.groupes = [groupe._id];
-        }
-       
+        user.estActif = true;
+        let groupe = await Groupe.findOne({ nom: "employe" });
+        user.groupes = [groupe._id];
+        await user.save({ session: session });
+        await mailService.sendConfirmationCompteMail(user.email);
+        await session.commitTransaction();
+        await session.endSession();
+        return res.send({ message: "Utilsateur inscrit" });
+    } catch (error) {
+        logger.error(error.message);
+        await session.abortTransaction();
+        await session.endSession();
+        return res.status(500).send({ message: "Erreur survenue pendant l'inscription de l'utilisateur" });
+    }
+}
+
+exports.signup = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    let user = new User({ 
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password),
+        salt: "random-salt",
+    });
+
+    try {
+        user = await user.save({ session: session });
+        let groupe = await Groupe.findOne({ nom: "client" });
+        user.groupes = [groupe._id];
         await user.save({ session: session });
         await mailService.sendConfirmationCompteMail(user.email);
         await session.commitTransaction();
@@ -50,18 +70,27 @@ exports.signup = async (req, res) => {
 
 exports.signin = async (req, res) => {
     let user = await User.findOne({ email: req.body.email });
+    // Check email
     if (!user) {
         return res.status(401).send({ message: "Identifiant ou mot de passe erroné" });
     }
-
+    // Check password
     let passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password,
     );
-
     if (!passwordIsValid) {
         return res.status(401).send({ message: "Identifiant ou mot de passe erroné" });
     }
+    // Check estVerifie
+    if (user.estVerifie == false){
+        return res.status(403).send({ message: "Compte non vérifié." });
+    }
+    // Check estActif
+    if (user.estActif == false){
+        return res.status(403).send({ message: "Compte non activé." });
+    }
+    // Generate JWT token
     const token = jwt.sign({ id: user.id }, 
         config.secret, 
         { 
