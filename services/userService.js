@@ -26,7 +26,7 @@ exports.updateUser=async(body)=>{
         new:true
     }).select({"password":0});
 }//modification utilisateur
-
+ 
 exports.getEmploye=async()=>{
     let groupe_id= await Groupe.findOne({nom:'client'});
     console.log(groupe_id._id);
@@ -41,6 +41,6 @@ exports.createUser=async(user)=>{
 };
 
 exports.getUserById=async(id)=>{
-    return await userModel.findById(id);
+    return await userModel.findById(id).select({"password":0,"estVerifie":0,"estActif":0,"vers":0});
 };
 

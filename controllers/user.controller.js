@@ -1,6 +1,7 @@
 const { log } = require("winston");
 const userService=require("../services/userService");
-const userModel=require("../models/user.model")
+const userModel=require("../models/user.model");
+const { MongooseError } = require("mongoose");
 
 exports.allAccess = (req, res) => {
     res.status(200).send("Contenu public.");
@@ -61,5 +62,20 @@ exports.addUser=async(req,res)=>{
     catch(err){
        
         res.status(500).send({error:err.message});
+    }
+}
+
+exports.findUserById=async(req,res)=>{
+    try{
+        let data_users=await userService.getUserById(req.body._id);
+        res.status(200).send({data:data_users});
+    }
+    catch(err){
+        if(err instanceof MongooseError.ValidationError){
+            res.status(401).send({message:err.message});
+        }
+        else{
+            res.status(500).send({message:"erreur du serveur"});
+        }
     }
 }
