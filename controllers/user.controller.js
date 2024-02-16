@@ -25,7 +25,7 @@ exports.allPersonnel= async (req,res)=>{
         const count=(await userService.getEmploye()).length;
         console.log(count);
         res.status(200).send({data:dataUser,totalPages: Math.ceil(count / limit),
-        currentPage: page});
+        currentPage: page,totalItems:count});
     }
     catch(err){
         res.status(500).send({error:err.message});

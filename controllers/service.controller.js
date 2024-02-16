@@ -105,7 +105,7 @@ exports.finAllPaginateService=async(req,res)=>{
         const count=(await serviceService.getAllService()).length;
         console.log(count);
         res.status(200).send({data:data_services,totalPages: Math.ceil(count / limit),
-        currentPage: page});
+        currentPage: page,totalItems:count});
     }
     catch(err){
         res.status(500).send({error:err.message});

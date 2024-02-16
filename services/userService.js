@@ -1,14 +1,16 @@
 const { log } = require("winston");
 const { user, mongoose } = require("../models");
-const userModel=require("../models/user.model")
+const userModel=require("../models/user.model");
+const Groupe = require("../models/groupe.model");
 exports.getAllUser=async()=>{
     return await userModel.find();
 
 };
 
 exports.getPaginateEmploye=async(page,limit)=>{
+    let groupe_id= await Groupe.findOne({nom:'client'});
     return await userModel.find({
-        'groupes': { $in: new mongoose.Types.ObjectId('65c9c6bd9ad63b9340a7e667')
+        'groupes': { $nin: new mongoose.Types.ObjectId(groupe_id)
         }
     }).limit(limit*1).skip((page-1)*limit).select({"password":0,"vers":0,"preferences":0});
 }
@@ -26,8 +28,10 @@ exports.updateUser=async(body)=>{
 }//modification utilisateur
 
 exports.getEmploye=async()=>{
+    let groupe_id= await Groupe.findOne({nom:'client'});
+    console.log(groupe_id._id);
     return await userModel.find({
-        'groupes': { $in: new mongoose.Types.ObjectId('65c9c6bd9ad63b9340a7e667')
+        'groupes': { $nin: new mongoose.Types.ObjectId(groupe_id._id)
         }
     });
 }
