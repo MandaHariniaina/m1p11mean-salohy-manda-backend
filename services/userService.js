@@ -29,7 +29,6 @@ exports.updateUser=async(body)=>{
  
 exports.getEmploye=async()=>{
     let groupe_id= await Groupe.findOne({nom:'client'});
-    console.log(groupe_id._id);
     return await userModel.find({
         'groupes': { $nin: new mongoose.Types.ObjectId(groupe_id._id)
         }
