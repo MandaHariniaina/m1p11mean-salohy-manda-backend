@@ -14,7 +14,24 @@ var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
+
+//app.use(express.urlencoded({ extended: false }));
+app.use(cors({
+    origin: true, // "true" will copy the domain of the request back
+                  // to the reply. If you need more control than this
+                  // use a function.
+
+    credentials: true, // This MUST be "true" if your endpoint is
+                       // authenticated via either a session cookie
+                       // or Authorization header. Otherwise the
+                       // browser will block the response.
+
+    methods: 'POST,GET,PUT,OPTIONS,DELETE' // Make sure you're not blocking
+                                           // pre-flight OPTIONS requests
+}))
+
 app.use(express.urlencoded({ extended: true }));
+
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
@@ -72,6 +89,20 @@ setLocale(fr);
 /* ---------- */
 
 /* Routing */
+
+/*var indexRouter = require('./routes/index.route');
+var userRouter = require('./routes/user.route');
+var authRouter = require('./routes/auth.route');
+var serviceRouter=require('./routes/service.route');
+
+app.use('/api/', indexRouter);
+app.use('/api/user', userRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/service',serviceRouter);
+app.listen(`${process.env.PORT}`, () => {   
+	console.log('Server is running on port'+`${process.env.PORT}`); 
+});*/
+
 var router = require('./routes');
 
 app.use('/api/', router.index);

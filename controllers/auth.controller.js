@@ -7,6 +7,7 @@ const { mailService } = require("../services");
 const mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { log } = require("winston");
 
 exports.signupEmploye = async (req, res) => {
     const session = await mongoose.startSession();
@@ -57,7 +58,9 @@ exports.signup = async (req, res) => {
         await session.commitTransaction();
         await session.endSession();
         return res.send({ message: "Utilsateur inscrit" });
+
     } catch (error) {
+
         logger.error(error.message);
         await session.abortTransaction();
         await session.endSession();
