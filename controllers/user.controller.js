@@ -18,7 +18,7 @@ exports.adminAccess = (req, res) => {
     res.status(200).send("Contenu admin.");
 };
 
-exports.allUser= async (req,res)=>{
+exports.allPersonnel= async (req,res)=>{
     const {page=1,limit=10}=req.query;
     try{
         const dataUser=await userService.getPaginateEmploye(page,limit);
