@@ -59,9 +59,12 @@ exports.createService=async(req,res)=>{
         return res.status(200).send({message:"success"});
     }
     catch(err){
-        console.log(err.message);
+        //console.log(err.message);
         await session.abortTransaction();
         await session.endSession();
+        if(err instanceof mongooseError.ValidationError){
+            return res.status(400).send({message:err.message});
+        }
         return res.status(500).send({message:"erreur d'ajout de service"});
     }  
 }
