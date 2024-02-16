@@ -17,8 +17,11 @@ validateRequestBody = async (req, res, next) => {
                 .matches(/^(?=.*[A-Z])/, 'Le mot de passe doit inclure au moins une lettre en majuscule')
                 .matches(/^(?=.*[0-9])/, 'Le mot de passe doit inclure au moins un chiffre')
                 .matches(/^(?=.*[!@#%&])/, 'Le mot de passe doit inclure au moins un caractère spécial')
-                .required(),
-            passwordConfirmation: yup.string().oneOf([yup.ref('password')], 'Les mots de passe doivent se ressembler')
+                .required("Mot de passe requis"),
+            passwordConfirmation: yup
+                .string()
+                .oneOf([yup.ref('password')], 'Les mots de passe doivent se ressembler')
+                .required("Confirmation mot de passe requis")
         });
         const validatedBody = await signUpSchema.validate(req.body);
         req.body = validatedBody;
