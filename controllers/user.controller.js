@@ -37,7 +37,7 @@ exports.update_status=async(req,res)=>{
     try{
         console.log(req.body);
         const user_update_status=await userService.updateStatusEmploye(req.body._id,req.query.status)
-        res.status(200).send({user:user_update_status});
+        res.status(200).send({data:user_update_status});
     }
     catch(err){
         res.status(500).send({error:err.message});
