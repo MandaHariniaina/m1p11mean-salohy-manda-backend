@@ -2,6 +2,16 @@ const { log } = require("winston");
 const userService=require("../services/userService");
 const userModel=require("../models/user.model")
 
+exports.deactivate = async (req, res) => {
+    try{
+        await userService.updateUser({ '_id': req.body.id, 'estActif': false });
+        let user = await userService.getUserById(req.body.id);
+        return res.status(200).send({ user: user, message: "Compte utilisateur désactivé" })
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+
 exports.allAccess = (req, res) => {
     res.status(200).send("Contenu public.");
 };
