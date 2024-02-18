@@ -17,5 +17,5 @@ router.put('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.valida
 //router.post('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceCreateRequestBody], controller.create);
 router.post('/create', controller.createService);
 router.get('/getAll',controller.findAllService);
-router.get('/getAllPaginate',controller.finAllPaginateService);
+router.get('/manager/allService',controller.findAllPaginateService);
 module.exports = router;

@@ -98,7 +98,7 @@ exports.findAllService=async(req,res)=>{
 
 }
 
-exports.finAllPaginateService=async(req,res)=>{
+exports.findAllPaginateService=async(req,res)=>{
     try{
         const{page=1,limit=10}=req.query;
         const data_services=await serviceService.getPaginateService(page,limit);
