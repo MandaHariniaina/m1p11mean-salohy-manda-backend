@@ -35,7 +35,7 @@ verifyToken = (req, res, next) => {
             req.userId = decoded.id;
             let user;
             try {
-                user = await User.findById(decoded.id);
+                user = await User.findById(decoded.id).populate('groupes');
                 req.user = user;
             } catch (error){
                 res.status(500).send({ message: err.message });
