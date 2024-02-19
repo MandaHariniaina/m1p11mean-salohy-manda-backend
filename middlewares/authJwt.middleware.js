@@ -70,7 +70,6 @@ estAdmin = (req, res, next) => {
 
 estEmploye = (req, res, next) => {
     let user = req.user;
-    console.log(req.user);
     Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
         for (let i = 0; i < userGroupes.length; i++) {
             if (userGroupes[i].nom === "employe") {
