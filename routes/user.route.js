@@ -8,7 +8,7 @@ router.get('/test/client', [authJwt.verifyToken], controller.clientAccess);
 router.get('/test/employe', [authJwt.verifyToken, authJwt.estEmploye], controller.employeAccess);
 router.get('/test/admin', [authJwt.verifyToken, authJwt.estAdmin], controller.adminAccess);
 router.post('/test/addUser',controller.addUser);
-router.get('/manager/allPersonnel',controller.allPersonnel);
+router.get('/manager/allPersonnel',[authJwt.verifyToken],controller.allPersonnel);
 router.put('/manager/update_status',controller.update_status);
 router.post('/getUserById',controller.findUserById);
 router.put('/employe/update_user',controller.update_user);
