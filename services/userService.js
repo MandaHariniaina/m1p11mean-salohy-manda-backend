@@ -34,6 +34,13 @@ exports.getEmploye=async()=>{
         }
     });
 }
+exports.findByGroupName=async(name)=>{
+    let groupe_id= await Groupe.findOne({nom:name});
+    return await userModel.find({
+        'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)
+        }
+    }).select({"password":0,"vers":0,"preferences":0})
+}
 
 exports.createUser=async(user)=>{
     return await userModel.create(user);

@@ -33,6 +33,17 @@ exports.allPersonnel= async (req,res)=>{
     }
 }
 
+exports.allPersonnelEmploye= async (req,res)=>{
+    const {name="employe"}=req.query;
+    try{
+        const dataUser=await userService.findByGroupName(name);
+        res.status(200).send({data:dataUser});
+    }
+    catch(err){
+        res.status(500).send({error:err.message});
+    }
+}
+
 exports.update_status=async(req,res)=>{
     try{
         console.log(req.body);
