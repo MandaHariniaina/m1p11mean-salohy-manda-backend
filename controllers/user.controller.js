@@ -2,6 +2,16 @@ const { log } = require("winston");
 const userService=require("../services/userService");
 const userModel=require("../models/user.model")
 
+exports.updatePreference = async (req, res) => {
+    try{
+        let user = await userService.updatePreference(req.user._id, req.body);
+        return res.status(200).send({ user: user, message: "Compte utilisateur désactivé" })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: error.message });
+    }
+}
+
 exports.deactivate = async (req, res) => {
     try{
         await userService.updateUser({ '_id': req.body.id, 'estActif': false });

@@ -3,6 +3,7 @@ const controller = require("../controllers/user.controller");
 var express = require('express');
 var router = express.Router();
 
+router.patch('/preference', [authJwt.verifyToken, userMiddleware.validatePreferenceRequestBody], controller.updatePreference);
 router.patch('/deactivate', [authJwt.verifyToken, authJwt.estAdmin, userMiddleware.validateDeactivateRequestParams], controller.deactivate);
 router.get('/test/all', controller.allAccess);
 router.get('/test/client', [authJwt.verifyToken], controller.clientAccess);

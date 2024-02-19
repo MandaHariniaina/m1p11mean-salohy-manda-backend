@@ -1,6 +1,12 @@
 const { log } = require("winston");
 const { user, mongoose } = require("../models");
 const userModel=require("../models/user.model")
+
+exports.updatePreference = async (userId, data) => {
+    let user = userModel.findByIdAndUpdate(userId, { 'preferences': data });
+    return user;
+};
+
 exports.getAllUser=async()=>{
     return await userModel.find();
 
