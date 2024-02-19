@@ -95,7 +95,9 @@ exports.signin = async (req, res) => {
 
 exports.refreshToken = async (req, res) => {
     const { refreshToken: requestToken } = req.body;
-
+    console.log(req.body);
+    console.log(requestToken);
+    console.log(this.refreshToken);
     if (requestToken == null) {
         return res.status(403).json({ message: "Le jeton d'actualisation est requis!" });
     }

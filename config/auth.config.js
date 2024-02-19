@@ -1,7 +1,7 @@
 module.exports = {
     secret: "mean-secret-key",
-    jwtExpiration: 84600,
-    // jwtExpiration: 3600,
+    //jwtExpiration: 84600,
+    jwtExpiration: 60,
     jwtRefreshExpiration: 84600,
     
     // For testing purpose
