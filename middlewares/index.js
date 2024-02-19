@@ -4,6 +4,7 @@ const serviceMiddleware = require("./service.middleware");
 const depenseMiddleware = require("./depense.middleware");
 const verifySignIn = require("./signIn.middleware");
 const userMiddleware = require('./user.middleware');
+const rendezVousMiddleware = require("./rendezVous.middleware");
 
 module.exports = {
     authJwt,
@@ -11,5 +12,6 @@ module.exports = {
     serviceMiddleware,
     depenseMiddleware,
     verifySignIn,
-    userMiddleware
+    userMiddleware,
+    rendezVousMiddleware
 };

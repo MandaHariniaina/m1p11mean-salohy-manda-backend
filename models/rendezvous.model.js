@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
-
-const rendezvousSchema = mongoose.Schema({
+const rendezvousSchema = new mongoose.Schema({
     client:{
         type:SchemaTypes.ObjectId,
         ref:'user'
     },
-    montant:{type:Number},
+    montant: Number,
+    duree: Number,
     gestionnaire: {
         type: SchemaTypes.ObjectId,
         ref: 'user',
@@ -36,14 +37,27 @@ const rendezvousSchema = mongoose.Schema({
 
 rendezvousSchema.pre('save', function (next) {
     if (this.isModified('prestations')) {
-        montant = 0;
-        this.prestations.forEach(function (prestation) {
-            montant += prestation.service.montant;
-        })
-        this.montant = this.montant;
+        (async () => {
+            let montant = 0;
+            let duree = 0;
+            const Service = require("./service.model");
+            for(let i = 0; i < this.prestations.length; i++){
+                const service = await Service.findById(this.prestations[i].service);
+                console.log(service);
+                montant += service.prix;
+                duree += service.duree;
+            }
+            this.montant = montant;
+            this.duree = duree;
+            next();
+        })();
+        // TODO Set dateFin value
+    } else {
+        next();
     }
-    next();
 });
+
+rendezvousSchema.plugin(mongoosePaginate);
 
 const Rendezvous = mongoose.model('Rendezvous', rendezvousSchema);
 

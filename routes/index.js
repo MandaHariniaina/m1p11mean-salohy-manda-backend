@@ -3,11 +3,13 @@ const index = require("./index.route");
 const service = require("./service.route");
 const user = require("./user.route");
 const depense = require("./depense.route");
+const rendezVous = require("./rendezVous.route");
 
 module.exports = {
     auth,
     index,
     service,
     user,
-    depense
+    depense,
+    rendezVous
 };
