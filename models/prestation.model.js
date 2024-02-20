@@ -7,6 +7,10 @@ const prestationSchema = new mongoose.Schema({
         type: SchemaTypes.ObjectId,
         ref: 'User',
     },
+    gestionnaire: {
+        type: SchemaTypes.ObjectId,
+        ref: 'User',
+    },
     details: [
         {
             service: String,

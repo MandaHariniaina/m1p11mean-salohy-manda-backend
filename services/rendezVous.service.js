@@ -18,6 +18,7 @@ exports.createPrestation = async (id) => {
     console.log(detailsPrestation);
     let prestation = await Prestation.create({
         client: rendezVous.client,
+        gestionnaire: rendezVous.gestionnaire,
         details: detailsPrestation,
     });
     return prestation;
