@@ -6,7 +6,7 @@ const { CompteMontantError } = require("../exceptions");
 exports.getProfile = async (req, res) => {
     try {
         let user = req.user;
-        return res.status(200).send({ user });
+        return res.status(200).send(user);
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
