@@ -1,5 +1,21 @@
 const Service = require('../models/service.model');
 const mongoose = require('mongoose');
+const config = require('../config');
+
+exports.find = async (filter, page, limit) => {
+    /* Create regex that ignores case and accents */
+    function diacriticSensitiveRegex(string = '') {
+        return string
+            .replace(/a/g, '[a,á,à,ä,â]')
+            .replace(/e/g, '[e,é,ë,è]')
+            .replace(/i/g, '[i,í,ï,ì]')
+            .replace(/o/g, '[o,ó,ö,ò]')
+            .replace(/u/g, '[u,ü,ú,ù]');
+        }
+    const nomRegex = new RegExp(diacriticSensitiveRegex(filter.nom), 'i');
+    /* ----------------------------------------- */
+    return await Service.paginate({ nom: { $regex: nomRegex } }, { page, limit, sort: { nom: 'asc' }, customLabels: config.mongoosePaginate.customLabels});
+};
 
 exports.delete = async (id) => {
     let serviceExists = await Service.exists({ _id: id });
