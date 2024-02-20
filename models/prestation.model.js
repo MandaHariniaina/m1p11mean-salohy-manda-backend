@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
 
-const prestationSchema = mongoose.Schema({
+const prestationSchema = new mongoose.Schema({
     montantTotal: Number,
     client: {
         type: SchemaTypes.ObjectId,
-        ref: 'user',
+        ref: 'User',
     },
     details: [
         {
             service: String,
             gestionnaire: {
                 type: SchemaTypes.ObjectId,
-                ref: 'user',
+                ref: 'User',
             },
             montant: Number,
         }
@@ -33,13 +33,17 @@ const prestationSchema = mongoose.Schema({
 
 prestationSchema.pre('save', function (next) {
     if (this.isModified('details')) {
-        montantTotal = 0;
-        this.details.forEach(function (detailPrestation) {
-            montantTotal += detailPrestation.montant;
-        })
-        this.montantTotal = this.montantTotal;
+        (async () => {
+            montantTotal = 0;
+            for(let i = 0; i < this.details.length; i++){
+                montantTotal += this.details[i].montant;
+            }
+            this.montantTotal = montantTotal;
+            next();
+        })();
+    } else {
+        next();
     }
-    next();
 });
 
 const Prestation = mongoose.model('Prestation', prestationSchema);
