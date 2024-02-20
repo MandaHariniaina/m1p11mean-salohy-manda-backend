@@ -23,7 +23,7 @@ exports.getEmployeMontantCommissionByDate = async (req, res) => {
 exports.findEmployePrestationByDate = async (req, res) => {
     try {
         let prestations = await prestationService.findEmployePrestationByDate(req.user._id, req.params.date);
-        return res.status(200).send({ prestations });
+        return res.status(200).send(prestations);
     } catch (error) {
         return res.status(500).send({ message: "Erreur du serveur." });
     }
