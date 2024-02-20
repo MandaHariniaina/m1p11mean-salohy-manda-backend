@@ -21,6 +21,7 @@ const prestationSchema = new mongoose.Schema({
         type: Map,
         of: Number,
     },
+    montantPaye: Number,
     estPaye: Boolean,
     vers: {
         type: Number,
@@ -39,6 +40,7 @@ prestationSchema.pre('save', function (next) {
             for (let [compte, montant] of this.paiement) {
                 montantPaye += montant;
             }
+            this.montantPaye = montantPaye;
             if (this.montantTotal <= montantPaye){
                 this.estPaye = true;
             } else {

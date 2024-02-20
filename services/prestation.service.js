@@ -3,6 +3,55 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const { CompteInexistantError, CompteMontantError } = require("../exceptions");
 
+exports.chiffreAffaireMois = async (mois, annee) => {
+    let dateDebut = new Date(`${annee}-${mois}-01`);
+    let dateFin = new Date(`${annee}-${mois}-01`);
+    dateFin.setMonth(dateFin.getMonth() + 1);
+    console.log(dateFin);
+    let chiffreAffaire = await Prestation.aggregate([
+        {
+            $match: {
+                createdAt: {
+                    $gte: dateDebut, // Date de début du mois
+                    $lt: dateFin // Date de fin du mois
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$montantPaye" }
+            }
+        }
+    ]);
+    if (chiffreAffaire.length > 0) return chiffreAffaire[0].total;
+    else return 0;
+};
+
+exports.chiffreAffaireJour = async (date) => {
+    let dateDebut = new Date(date);
+    let dateFin = new Date(date);
+    dateFin.setDate(dateFin.getDate() + 1);
+    let chiffreAffaire = await Prestation.aggregate([
+        {
+            $match: {
+                createdAt: {
+                    $gte: dateDebut, // Date de début du jour
+                    $lt: dateFin // Date de debut du jour suivant
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$montantPaye" }
+            }
+        }
+    ]);
+    if (chiffreAffaire.length > 0) return chiffreAffaire[0].total;
+    else return 0;
+};
+
 exports.paiement = async (id, user, compte) => {
     const session = await mongoose.startSession();
     session.startTransaction();
