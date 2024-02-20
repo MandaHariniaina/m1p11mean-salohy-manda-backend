@@ -15,7 +15,7 @@ exports.validateChiffreAffaireMoisGetParams = async (req, res, next) => {
     }
 }
 
-exports.validateChiffreAffaireJourGetParams = async (req, res, next) => {
+exports.validateDateParams = async (req, res, next) => {
     try {
         let validationSchema = yup.object().shape({
             date: yup.date().required()

@@ -3,6 +3,73 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const { CompteInexistantError, CompteMontantError } = require("../exceptions");
 
+exports.getPourcentageCommissionByDate = async (id, date) => {
+    let dateDebut = new Date(date);
+    let dateFin = new Date(date);
+    dateFin.setMonth(dateFin.getMonth() + 1);
+    let montantCommission = await Prestation.aggregate([
+        {
+            $match: {
+                gestionnaire: id,
+                createdAt: {
+                    $gte: dateDebut, 
+                    $lt: dateFin 
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                totalCommission: { $sum: "$montantTotalCommission" },
+                total : { $sum: "$montantTotal" }
+            }
+        }
+    ]);
+
+    if (montantCommission.length > 0) return montantCommission[0].totalCommission / montantCommission[0].total * 100;
+    else return 0;
+};
+
+exports.getMontantCommissionByDate = async (id, date) => {
+    let dateDebut = new Date(date);
+    let dateFin = new Date(date);
+    dateFin.setMonth(dateFin.getMonth() + 1);
+    let montantCommission = await Prestation.aggregate([
+        {
+            $match: {
+                gestionnaire: id,
+                createdAt: {
+                    $gte: dateDebut, 
+                    $lt: dateFin 
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$montantTotalCommission" }
+            }
+        }
+    ]);
+
+    if (montantCommission.length > 0) return montantCommission[0].total;
+    else return 0;
+};
+
+exports.findEmployePrestationByDate = async (id, date) => {
+    let dateDebut = new Date(date);
+    let dateFin = new Date(date);
+    dateFin.setMonth(dateFin.getMonth() + 1);
+    let prestations = await Prestation.find({ 
+        gestionnaire: id,
+        createdAt: {
+            $gte: dateDebut,
+            $lt: dateFin
+        }
+    });
+    return prestations;
+};
+
 exports.beneficeMois = async (mois, annee) => {
     let chiffreAffaireMois = await this.chiffreAffaireMois(mois, annee);
     let depenseMois = await this.depenseMois(mois, annee);
