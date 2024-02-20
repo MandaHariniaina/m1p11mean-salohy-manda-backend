@@ -42,7 +42,17 @@ exports.findByGroupName=async(name)=>{
     }).select({"password":0,"vers":0,"preferences":0})
 }
 
+exports.filtreMulticritereUser=async(user)=>{
+    console.log(user.createdAt);
+    if(user.createdAt!=""){
+        console.log("greatThan OR lessThan");
+    }
+    console.log(user);
+    return await userModel.find(user);
+}
+
 exports.createUser=async(user)=>{
+    
     return await userModel.create(user);
 };
 

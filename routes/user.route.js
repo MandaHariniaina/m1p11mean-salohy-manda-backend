@@ -13,4 +13,5 @@ router.get('/client/allPersonnelEmploye',controller.allPersonnelEmploye);
 router.put('/manager/update_status',controller.update_status);
 router.post('/getUserById',controller.findUserById);
 router.put('/employe/update_user',controller.update_user);
+router.post('/manager/filter_user',controller.filterUser);
 module.exports = router;
