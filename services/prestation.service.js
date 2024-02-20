@@ -1,13 +1,42 @@
-const { prestation: Prestation } = require("../models");
+const { prestation: Prestation, depense: Depense } = require("../models");
 const mongoose = require('mongoose');
 const config = require('../config');
 const { CompteInexistantError, CompteMontantError } = require("../exceptions");
+
+exports.beneficeMois = async (mois, annee) => {
+    let chiffreAffaireMois = await this.chiffreAffaireMois(mois, annee);
+    let depenseMois = await this.depenseMois(mois, annee);
+    return chiffreAffaireMois - depenseMois;
+};
+
+exports.depenseMois = async (mois, annee) => {
+    let dateDebut = new Date(`${annee}-${mois}-01`);
+    let dateFin = new Date(`${annee}-${mois}-01`);
+    dateFin.setMonth(dateFin.getMonth() + 1);
+    let depense = await Depense.aggregate([
+        {
+            $match: {
+                createdAt: {
+                    $gte: dateDebut, // Date de début du mois
+                    $lt: dateFin // Date de fin du mois
+                }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$montant" }
+            }
+        }
+    ]);
+    if (depense.length > 0) return depense[0].total;
+    else return 0;
+};
 
 exports.chiffreAffaireMois = async (mois, annee) => {
     let dateDebut = new Date(`${annee}-${mois}-01`);
     let dateFin = new Date(`${annee}-${mois}-01`);
     dateFin.setMonth(dateFin.getMonth() + 1);
-    console.log(dateFin);
     let chiffreAffaire = await Prestation.aggregate([
         {
             $match: {

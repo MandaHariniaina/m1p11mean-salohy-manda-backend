@@ -2,6 +2,15 @@ const { prestationService } = require('../services');
 const mongooseError = require('mongoose').Error;
 const { CompteMontantError, CompteInexistantError } = require("../exceptions");
 
+exports.beneficeMois = async (req, res) => {
+    try {
+        let benefice = await prestationService.beneficeMois(req.params.mois, req.params.annee);
+        return res.status(200).send({ benefice });
+    } catch (error) {
+        return res.status(500).send({ message: "Erreur du serveur." });
+    }
+}
+
 exports.chiffreAffaireMois = async (req, res) => {
     try {
         let chiffreAffaire = await prestationService.chiffreAffaireMois(req.params.mois, req.params.annee);
