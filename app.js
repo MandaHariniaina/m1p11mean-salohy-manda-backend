@@ -111,6 +111,7 @@ app.use('/api/auth', router.auth);
 app.use('/api/service', router.service);
 app.use('/api/depense', router.depense);
 app.use('/api/rendezVous', router.rendezVous);
+app.use('/api/prestation', router.prestation);
 /* ---------- */
 
 module.exports = app;

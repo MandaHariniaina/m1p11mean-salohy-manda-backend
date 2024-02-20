@@ -21,6 +21,7 @@ const prestationSchema = new mongoose.Schema({
         type: Map,
         of: Number,
     },
+    estPaye: Boolean,
     vers: {
         type: Number,
         default: 1.0,
@@ -32,6 +33,20 @@ const prestationSchema = new mongoose.Schema({
 });
 
 prestationSchema.pre('save', function (next) {
+    if (this.isModified(['paiement', 'montantTotal'])){
+        (async () => {
+            montantPaye = 0;
+            for (let [compte, montant] of this.paiement) {
+                montantPaye += montant;
+            }
+            if (this.montantTotal <= montantPaye){
+                this.estPaye = true;
+            } else {
+                this.estPaye = false;
+            }
+            next();
+        })();
+    }
     if (this.isModified('details')) {
         (async () => {
             montantTotal = 0;

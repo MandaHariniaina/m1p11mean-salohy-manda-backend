@@ -4,6 +4,7 @@ const service = require("./service.route");
 const user = require("./user.route");
 const depense = require("./depense.route");
 const rendezVous = require("./rendezVous.route");
+const prestation = require("./prestation.route");
 
 module.exports = {
     auth,
@@ -11,5 +12,6 @@ module.exports = {
     service,
     user,
     depense,
-    rendezVous
+    rendezVous,
+    prestation,
 };
