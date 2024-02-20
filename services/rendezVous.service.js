@@ -1,7 +1,27 @@
 const db = require("../models");
 const RendezVous = db.rendezvous;
+const Prestation = db.prestation;
 const config = require("../config");
 const User = db.user;
+
+exports.createPrestation = async (id) => {
+    let rendezVous = await RendezVous.findById(id).populate("prestations.service");
+    let detailsPrestation = [];
+    for(let i = 0; i < rendezVous.prestations.length; i++){
+        let prestation = rendezVous.prestations[i];
+        detailsPrestation.push({
+            service: prestation.service.nom,
+            gestionnaire: prestation.gestionnaire,
+            montant: prestation.service.prix
+        });
+    }
+    console.log(detailsPrestation);
+    let prestation = await Prestation.create({
+        client: rendezVous.client,
+        details: detailsPrestation,
+    });
+    return prestation;
+};
 
 exports.delete = async (id) => {
     return await RendezVous.findByIdAndDelete(id);

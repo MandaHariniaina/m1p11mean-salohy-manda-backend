@@ -4,6 +4,7 @@ const { authJwt } = require("../middlewares");
 const { rendezVousController: controller } = require("../controllers");
 const { rendezVousMiddleware } = require("../middlewares");
 
+router.post('/create-prestation', [authJwt.verifyToken, authJwt.estEmploye, rendezVousMiddleware.validateCreatePrestationRequestBody], controller.createPrestation);
 router.delete('/', [authJwt.verifyToken, rendezVousMiddleware.validateDeleteRequestBody], controller.delete);
 router.get('/', [authJwt.verifyToken, rendezVousMiddleware.validateGetRequestParams], controller.findAll);
 router.put('/', [authJwt.verifyToken, rendezVousMiddleware.validatePutRequestBody], controller.update);

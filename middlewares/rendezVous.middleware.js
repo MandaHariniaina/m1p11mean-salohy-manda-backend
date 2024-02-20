@@ -3,6 +3,27 @@ const mongoose = require('mongoose');
 const { isValidObjectId } = mongoose;
 const { rendezvous: RendezVous } = require("../models");
 
+exports.validateCreatePrestationRequestBody = async (req, res, next) => {
+    try {
+        let validationSchema = yup.object().shape({
+            id: yup
+                .string()
+                .required()
+                .transform( value => {
+                    if(isValidObjectId(value)){
+                        return value;
+                    }
+                    return '';
+                })
+        });
+        req.body = await validationSchema.validate(req.body);
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.errors });
+        return;
+    }
+};
+
 exports.validateGetRequestParams = async (req, res, next) => {
     try {
         let validationSchema = yup.object().shape({

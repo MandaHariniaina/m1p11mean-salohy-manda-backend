@@ -1,8 +1,18 @@
 const { rendezVousService } = require("../services");
 
+exports.createPrestation = async (req, res) => {
+    try {
+        let prestation = await rendezVousService.createPrestation(req.body.id);
+        return res.status(201).send({ prestation });
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
 exports.delete = async (req, res) => {
     try {
         await rendezVousService.delete(req.body.id);
+        return res.status(200).send({ message: "Rendez vous supprimé." });
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
@@ -24,7 +34,6 @@ exports.findAll = async (req, res) => {
         }
         return res.status(200).send(rendezVous);
     } catch (error) {
-        console.log(error);
         return res.status(500).send({ message: error.message });
     }
 }
