@@ -15,7 +15,7 @@ exports.compte = async (userId, data) => {
         if (user.compte.get(compteLabel)){
             user.compte.set(compteLabel, user.compte.get(compteLabel) + data.montant);
         } else {
-            user.compte.set(compteLabel) = data.montant;
+            user.compte.set(compteLabel, data.montant);
         }
     }
     user = await user.save();
