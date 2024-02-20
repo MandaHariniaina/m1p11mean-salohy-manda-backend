@@ -3,6 +3,7 @@ const { SchemaTypes } = mongoose;
 
 const prestationSchema = new mongoose.Schema({
     montantTotal: Number,
+    montantTotalCommission: Number,
     client: {
         type: SchemaTypes.ObjectId,
         ref: 'User',
@@ -62,10 +63,13 @@ prestationSchema.pre('save', function (next) {
     if (this.isModified('details')) {
         (async () => {
             montantTotal = 0;
+            montantTotalCommission = 0;
             for(let i = 0; i < this.details.length; i++){
                 montantTotal += this.details[i].montant;
+                montantTotalCommission += this.details[i].montantCommission;
             }
             this.montantTotal = montantTotal;
+            this.montantTotalCommission = montantTotalCommission;
             next();
         })();
     } else {
