@@ -18,7 +18,8 @@ exports.createPrestation = async (id) => {
                 gestionnaire: prestation.gestionnaire,
                 montant: prestation.service.prix,
                 commission: prestation.service.commission,
-                montantCommission: prestation.service.prix * prestation.service.commission / 100
+                montantCommission: prestation.service.prix * prestation.service.commission / 100,
+                duree: prestation.service.duree
             });
         }
         let prestation = await Prestation.create({
