@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema({
         type: Map,
         of: String,
     },
+    // compte : [{
+    //     type: String,
+    //     montant: Number,
+    // }],
     compte: {
         type: Map,
         of: Number,

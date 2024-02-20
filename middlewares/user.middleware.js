@@ -3,6 +3,20 @@ const { isValidObjectId } = require('mongoose');
 const db = require('../models');
 const { user: User, service: Service } = db;
 
+validateCompteRequestBody = async (req, res, next) => {
+    try {
+        let validationSchema = yup.object().shape({
+            compte: yup.string().required(),
+            montant: yup.number().default(0)
+        });
+        req.body = await validationSchema.validate(req.body);
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+        return;
+    }
+};
+
 // TODO preference validation schema: array of prefered employe and prefered service
 validatePreferenceRequestBody = async (req, res, next) => {
     try {
@@ -76,6 +90,7 @@ validateDeactivateRequestParams = async (req, res, next) => {
 };
 
 const userMiddleware = {
+    validateCompteRequestBody,
     validateDeactivateRequestParams,
     validatePreferenceRequestBody,
 };

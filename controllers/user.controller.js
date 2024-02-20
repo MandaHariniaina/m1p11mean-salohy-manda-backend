@@ -1,6 +1,19 @@
 const { log } = require("winston");
 const userService=require("../services/userService");
 const userModel=require("../models/user.model")
+const { CompteMontantError } = require("../exceptions");
+
+exports.compte = async (req, res) => {
+    try{
+        let user = await userService.compte(req.user._id, req.body);
+        return res.status(200).send({ user: user, message: "Compte utilisateur mise à jour" })
+    } catch (error) {
+        if (error instanceof CompteMontantError){
+            return res.status(406).send({ message: error.message });
+        }
+        return res.status(500).send({ message: error.message });
+    }
+};
 
 exports.updatePreference = async (req, res) => {
     try{
