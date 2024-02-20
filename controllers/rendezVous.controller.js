@@ -2,6 +2,10 @@ const { rendezVousService } = require("../services");
 
 exports.createPrestation = async (req, res) => {
     try {
+        let estRealise = await rendezVousService.estRealise(req.body.id);
+        if (estRealise){
+            return res.status(400).send({ message: "Ce rendez-vous a déja été réalisé." })
+        }
         let prestation = await rendezVousService.createPrestation(req.body.id);
         return res.status(201).send({ prestation });
     } catch (error) {

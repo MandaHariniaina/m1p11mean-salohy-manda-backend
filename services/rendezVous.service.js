@@ -3,29 +3,50 @@ const RendezVous = db.rendezvous;
 const Prestation = db.prestation;
 const config = require("../config");
 const User = db.user;
+const mongoose = require("mongoose");
 
 exports.createPrestation = async (id) => {
-    let rendezVous = await RendezVous.findById(id).populate("prestations.service");
-    let detailsPrestation = [];
-    for(let i = 0; i < rendezVous.prestations.length; i++){
-        let prestation = rendezVous.prestations[i];
-        detailsPrestation.push({
-            service: prestation.service.nom,
-            gestionnaire: prestation.gestionnaire,
-            montant: prestation.service.prix
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        let rendezVous = await RendezVous.findById(id).populate("prestations.service");
+        let detailsPrestation = [];
+        for(let i = 0; i < rendezVous.prestations.length; i++){
+            let prestation = rendezVous.prestations[i];
+            detailsPrestation.push({
+                service: prestation.service.nom,
+                gestionnaire: prestation.gestionnaire,
+                montant: prestation.service.prix,
+                commission: prestation.service.commission,
+                montantCommission: prestation.service.prix * prestation.service.commission / 100
+            });
+        }
+        let prestation = await Prestation.create({
+            client: rendezVous.client,
+            gestionnaire: rendezVous.gestionnaire,
+            details: detailsPrestation,
+            session: session
         });
+        rendezVous.estRealise = true;
+        rendezVous = await rendezVous.save({ session: session });
+        await session.commitTransaction();
+        await session.endSession();
+        return prestation;
+    } catch (error) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw new Error("Erreur survenue pendant l'enregistrement de la prestation");
     }
-    console.log(detailsPrestation);
-    let prestation = await Prestation.create({
-        client: rendezVous.client,
-        gestionnaire: rendezVous.gestionnaire,
-        details: detailsPrestation,
-    });
-    return prestation;
 };
+    
 
 exports.delete = async (id) => {
     return await RendezVous.findByIdAndDelete(id);
+};
+
+exports.estRealise = async (id) => {
+    let rendezVous = await RendezVous.findById(id);
+    return rendezVous.estRealise;
 };
 
 exports.findRappel = async () => {

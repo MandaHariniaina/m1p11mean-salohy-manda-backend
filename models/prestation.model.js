@@ -19,6 +19,12 @@ const prestationSchema = new mongoose.Schema({
                 ref: 'User',
             },
             montant: Number,
+            commission: {
+                type: Number,
+                min: 0,
+                max: 100,
+            },
+            montantCommission: Number
         }
     ],
     paiement: {

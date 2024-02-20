@@ -25,6 +25,10 @@ const rendezvousSchema = new mongoose.Schema({
     }],
     date: Date,
     dateFin: Date,
+    estRealise: {
+        type: Boolean,
+        default: false
+    },
     vers: {
         type: Number,
         default: 1.0,
