@@ -5,22 +5,22 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const rendezvousSchema = new mongoose.Schema({
     client:{
         type:SchemaTypes.ObjectId,
-        ref:'user'
+        ref:'User'
     },
     montant: Number,
     duree: Number,
     gestionnaire: {
         type: SchemaTypes.ObjectId,
-        ref: 'user',
+        ref: 'User',
     },
     prestations: [{
         service: {
             type: SchemaTypes.ObjectId,
-            ref: 'service',
+            ref: 'Service',
         },
         gestionnaire: {
             type: SchemaTypes.ObjectId,
-            ref: 'user',
+            ref: 'User',
         },
     }],
     date: Date,
