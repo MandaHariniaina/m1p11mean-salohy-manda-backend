@@ -36,7 +36,7 @@ exports.delete = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         let service = await serviceService.update(req.body);
-        return res.status(200).send({ service: service, message: "Service mise à jour." });
+        return res.status(200).send(service);
     } catch (error) {
         if (error instanceof mongooseError.ValidationError) {
             return res.status(400).send({ message: error.message });
@@ -51,7 +51,7 @@ exports.update = async (req, res) => {
 exports.create = async (req, res) => {
     try{
         let service = await serviceService.save(req.body);
-        return res.status(201).send({ service: service, message: "Service créé" });
+        return res.status(201).send(service);
     } catch(error) {
         if (error instanceof mongooseError.ValidationError){
             return res.status(400).send({ message: error.message });
