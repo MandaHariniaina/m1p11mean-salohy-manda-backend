@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const serviceSchema = new mongoose.Schema({
     nom: {
@@ -41,6 +42,8 @@ const serviceSchema = new mongoose.Schema({
     timestamps: true,
 }
 );
+
+serviceSchema.plugin(mongoosePaginate);
 
 serviceSchema.pre('save', function (next) {
     if (this.isModified('nom')) {

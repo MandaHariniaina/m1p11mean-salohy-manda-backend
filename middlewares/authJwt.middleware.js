@@ -35,7 +35,7 @@ verifyToken = (req, res, next) => {
             req.userId = decoded.id;
             let user;
             try {
-                user = await User.findById(decoded.id);
+                user = await User.findById(decoded.id).populate(['groupes', 'preferences']);
                 req.user = user;
             } catch (error){
                 res.status(500).send({ message: err.message });
@@ -70,7 +70,6 @@ estAdmin = (req, res, next) => {
 
 estEmploye = (req, res, next) => {
     let user = req.user;
-    console.log(req.user);
     Groupe.find({ _id: {$in: user.groupes} }).then((userGroupes) =>{
         for (let i = 0; i < userGroupes.length; i++) {
             if (userGroupes[i].nom === "employe") {

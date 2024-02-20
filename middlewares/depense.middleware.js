@@ -5,7 +5,7 @@ exports.validateGetRequestParams = async (req, res, next) => {
     try {
         let validationSchema = yup.object().shape({
             page: yup.number().integer().default(1),
-            limit: yup.number().integer().default(2),
+            limit: yup.number().integer().default(10),
             dateDebut: yup.date().notRequired(),
             dateFin: yup.date().notRequired(),
         });

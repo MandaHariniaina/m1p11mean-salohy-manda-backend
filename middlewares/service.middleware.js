@@ -1,6 +1,21 @@
 const yup = require('yup');
 const { isValidObjectId } = require('mongoose');
 
+exports.validateGetRequestQuery = async (req, res, next) => {
+    try{
+        const validationSchema = yup.object().shape({
+            nom: yup.string().notRequired(),
+            page: yup.number().integer().default(1),
+            limit: yup.number().integer().default(10),
+        });
+        req.query = await validationSchema.validate(req.query);
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.errors });
+        return;
+    }
+};
+
 exports.validateServiceDeleteRequestBody = async (req, res, next) => {
     try{
         const serviceUpdateSchema = yup.object().shape({

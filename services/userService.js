@@ -1,6 +1,32 @@
 const { log } = require("winston");
 const { user, mongoose } = require("../models");
-const userModel=require("../models/user.model")
+const userModel=require("../models/user.model");
+const { CompteMontantError } = require("../exceptions");
+
+exports.compte = async (userId, data) => {
+    let user = await userModel.findById(userId);
+    let compteLabel = data.compte;
+    if (user.compte == undefined) {
+        user.compte = new Map([[compteLabel, data.montant]]);
+    } else {
+        if ((user.compte.get(compteLabel) + data.montant) < 0){
+            throw new CompteMontantError("Montant du compte négatif");
+        }
+        if (user.compte.get(compteLabel)){
+            user.compte.set(compteLabel, user.compte.get(compteLabel) + data.montant);
+        } else {
+            user.compte.set(compteLabel, data.montant);
+        }
+    }
+    user = await user.save();
+    return user;
+};
+
+exports.updatePreference = async (userId, data) => {
+    let user = userModel.findByIdAndUpdate(userId, { 'preferences': data });
+    return user;
+};
+
 exports.getAllUser=async()=>{
     return await userModel.find();
 

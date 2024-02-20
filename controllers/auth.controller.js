@@ -29,7 +29,7 @@ exports.signupEmploye = async (req, res) => {
         await mailService.sendConfirmationCompteMail(user.email);
         await session.commitTransaction();
         await session.endSession();
-        return res.send({ message: "Utilsateur inscrit" });
+        return res.send({ message: "Utilisateur inscrit" });
     } catch (error) {
         logger.error(error.message);
         await session.abortTransaction();
@@ -57,7 +57,7 @@ exports.signup = async (req, res) => {
         await mailService.sendConfirmationCompteMail(user.email);
         await session.commitTransaction();
         await session.endSession();
-        return res.send({ message: "Utilsateur inscrit" });
+        return res.send({ message: "Utilisateur inscrit" });
 
     } catch (error) {
 
