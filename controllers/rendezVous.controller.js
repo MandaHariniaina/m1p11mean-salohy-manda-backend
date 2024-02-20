@@ -45,7 +45,7 @@ exports.findAll = async (req, res) => {
 exports.update = async (req, res) => {
     try{
         const rendezVous = await rendezVousService.update(req.body.id, req.body);
-        return res.status(200).send({ rendezVous: rendezVous, message: "Rendez-vous mise à jour" });
+        return res.status(200).send(rendezVous);
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
@@ -55,7 +55,7 @@ exports.create = async (req, res) => {
     try{
         req.body.client = req.user._id
         const rendezVous = await rendezVousService.create(req.body);
-        return res.status(201).send({ rendezVous: rendezVous, message: "Rendez-vous enregistré" });
+        return res.status(201).send(rendezVous);
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
