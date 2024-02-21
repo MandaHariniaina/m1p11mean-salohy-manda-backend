@@ -2,6 +2,13 @@ const Service = require('../models/service.model');
 const mongoose = require('mongoose');
 const config = require('../config');
 
+exports.createPromotion = async (id, data) => {
+    let service = await Service.findById(id);
+    service.promotions.push(data);
+    service = await service.save();
+    return service;
+};
+
 exports.find = async (filter, page, limit) => {
     /* Create regex that ignores case and accents */
     function diacriticSensitiveRegex(string = '') {
@@ -14,7 +21,17 @@ exports.find = async (filter, page, limit) => {
         }
     const nomRegex = new RegExp(diacriticSensitiveRegex(filter.nom), 'i');
     /* ----------------------------------------- */
-    return await Service.paginate({ nom: { $regex: nomRegex } }, { page, limit, sort: { nom: 'asc' }, customLabels: config.mongoosePaginate.customLabels});
+    return await Service.paginate(
+        { 
+            nom: { $regex: nomRegex } 
+        }, 
+        { 
+            page, 
+            limit, 
+            sort: { nom: 'asc' }, 
+            customLabels: config.mongoosePaginate.customLabels,
+        }
+    );
 };
 
 exports.delete = async (id) => {
