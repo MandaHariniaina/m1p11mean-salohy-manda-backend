@@ -38,8 +38,7 @@ exports.createPrestation = async (id) => {
         );
         rendezVous.estRealise = true;
         rendezVous = await rendezVous.save({ session: session });
-        // await session.commitTransaction();
-        await session.abortTransaction();
+        await session.commitTransaction();
         await session.endSession();
         return prestation;
     } catch (error) {
