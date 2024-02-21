@@ -43,11 +43,21 @@ exports.updatePreference = async (req, res) => {
     }
 }
 
+exports.activate = async (req, res) => {
+    try{
+        await userService.updateUser({ '_id': req.body.id, 'estActif': true });
+        let user = await userService.getUserById(req.body.id);
+        return res.status(200).send(user);
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+
 exports.deactivate = async (req, res) => {
     try{
         await userService.updateUser({ '_id': req.body.id, 'estActif': false });
         let user = await userService.getUserById(req.body.id);
-        return res.status(200).send({ user: user, message: "Compte utilisateur désactivé" })
+        return res.status(200).send(user);
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }
