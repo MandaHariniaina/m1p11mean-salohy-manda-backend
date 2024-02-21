@@ -4,12 +4,38 @@ const serviceService = require('../services/service.service')
 const mongooseError = require('mongoose').Error;
 const mongoose = require("mongoose");
 
+exports.createPromotion = async (req, res) => {
+    try {
+        let service = await serviceService.createPromotion(req.body.id, req.body);
+        return res.status(200).send(service);
+    } catch (error) {
+        if (error instanceof mongooseError.ValidationError) {
+            return res.status(400).send({ message: error.message });
+        } else {
+            return res.status(500).send({ message: "Erreur du serveur." });
+        }
+    }
+};
+
+exports.find = async (req, res) => {
+    try {
+        const page = req.query.page;
+        const limit = req.query.limit;
+        delete req.query.page; // remove page from request query
+        delete req.query.limit; // remove limit from request query
+        let services = await serviceService.find(req.query, page, limit);
+        return res.status(200).send(services);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: "Erreur du serveur." });
+    }
+};
+
 exports.delete = async (req, res) => {
     try {
         await serviceService.delete(req.body.id);
         return res.status(200).send({ message: "Service supprimé." })
     } catch (error) {
-        console.log(error);
         if (error instanceof mongooseError.ValidationError) {
             return res.status(400).send({ message: error.message });
         } else if (error instanceof mongooseError.DocumentNotFoundError) {
@@ -23,7 +49,7 @@ exports.delete = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         let service = await serviceService.update(req.body);
-        return res.status(200).send({ service: service, message: "Service mise à jour." });
+        return res.status(200).send(service);
     } catch (error) {
         if (error instanceof mongooseError.ValidationError) {
             return res.status(400).send({ message: error.message });
@@ -38,7 +64,7 @@ exports.update = async (req, res) => {
 exports.create = async (req, res) => {
     try{
         let service = await serviceService.save(req.body);
-        return res.status(201).send({ service: service, message: "Service créé" });
+        return res.status(201).send(service);
     } catch(error) {
         if (error instanceof mongooseError.ValidationError){
             return res.status(400).send({ message: error.message });
