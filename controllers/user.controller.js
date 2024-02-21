@@ -1,7 +1,5 @@
 const { log } = require("winston");
 const userService=require("../services/userService");
-
-const userModel=require("../models/user.model");
 const { MongooseError } = require("mongoose");
 
 const userModel=require("../models/user.model")

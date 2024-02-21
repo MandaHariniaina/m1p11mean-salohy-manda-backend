@@ -1,6 +1,4 @@
 const { log } = require("winston");
-const { user, mongoose } = require("../models");
-const userModel=require("../models/user.model");
 const Groupe = require("../models/groupe.model");
 
 const { user, prestation: Prestation } = require("../models");
