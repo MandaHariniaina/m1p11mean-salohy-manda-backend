@@ -13,9 +13,9 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/promotion', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validatePromotionRequestBody], controller.createPromotion);
-router.get('/', [authJwt.verifyToken, serviceMiddleware.validateGetRequestQuery], controller.find);
-router.delete('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceDeleteRequestBody], controller.delete);
-router.put('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceUpdateRequestBody], controller.update);
+router.get('/manager/find', [authJwt.verifyToken, serviceMiddleware.validateGetRequestQuery], controller.find);
+router.delete('/manager/deleteService', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceDeleteRequestBody], controller.delete);
+router.put('/manager/updateService', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceUpdateRequestBody], controller.update);
 //router.post('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceCreateRequestBody], controller.create);
 router.post('/manager/create', controller.createService);
 router.get('/manager/getAll',controller.findAllService);
