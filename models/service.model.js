@@ -95,8 +95,8 @@ serviceSchema.virtual('estEnPromotion').get(function () {
 
 serviceSchema.virtual('promotionActuelle').get(function () {
     const currentDate = new Date();
-    for (let i = 0; i < this.promotionss.length; i++) {
-        let promotion = this.promotionss[i];
+    for (let i = 0; i < this.promotions.length; i++) {
+        let promotion = this.promotions[i];
         if (promotion.dateDebut <= currentDate && promotion.dateFin >= currentDate){
             return promotion;
         }
@@ -105,7 +105,7 @@ serviceSchema.virtual('promotionActuelle').get(function () {
 });
 
 serviceSchema.virtual('prixPromotion').get(function() {
-    if (this.estEnPromo){
+    if (this.estEnPromotion){
         return this.prix * (1 - (this.promotionActuelle.pourcentageReduction / 100))
     }
     return this.prix;
