@@ -3,6 +3,15 @@ const userService=require("../services/userService");
 const userModel=require("../models/user.model")
 const { CompteMontantError } = require("../exceptions");
 
+exports.getTempsTravailMoyen = async (req, res) => {
+    try {
+        let tempsTravailMoyen = await userService.getTempsTravailMoyen();
+        return res.status(200).send(tempsTravailMoyen);
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
 exports.getProfile = async (req, res) => {
     try {
         let user = req.user;
