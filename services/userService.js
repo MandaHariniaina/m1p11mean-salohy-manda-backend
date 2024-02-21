@@ -1,4 +1,8 @@
 const { log } = require("winston");
+const { user, mongoose } = require("../models");
+const userModel=require("../models/user.model");
+const Groupe = require("../models/groupe.model");
+
 const { user, prestation: Prestation } = require("../models");
 const mongoose = require("mongoose");
 const userModel=require("../models/user.model");
@@ -100,20 +104,22 @@ exports.updatePreference = async (userId, data) => {
     return user;
 };
 
+
 exports.getAllUser=async()=>{
     return await userModel.find();
 
 };
 
 exports.getPaginateEmploye=async(page,limit)=>{
+    let groupe_id= await Groupe.findOne({nom:'client'});
     return await userModel.find({
-        'groupes': { $in: new mongoose.Types.ObjectId('65c9c6bd9ad63b9340a7e667')
+        'groupes': { $nin: new mongoose.Types.ObjectId(groupe_id)
         }
     }).limit(limit*1).skip((page-1)*limit).select({"password":0,"vers":0,"preferences":0});
 }
 
 exports.updateStatusEmploye=async(user_id,status)=>{
-    return await userModel.findByIdAndUpdate(user_id,{'est_verifie':status},{
+    return await userModel.findByIdAndUpdate(user_id,{'estActif':status},{
         new:true
     }).select({"password":0});
 }//modification status utilisateur
@@ -123,19 +129,37 @@ exports.updateUser=async(body)=>{
         new:true
     }).select({"password":0});
 }//modification utilisateur
-
+ 
 exports.getEmploye=async()=>{
+    let groupe_id= await Groupe.findOne({nom:'client'});
     return await userModel.find({
-        'groupes': { $in: new mongoose.Types.ObjectId('65c9c6bd9ad63b9340a7e667')
+        'groupes': { $nin: new mongoose.Types.ObjectId(groupe_id._id)
         }
     });
 }
+exports.findByGroupName=async(name)=>{
+    let groupe_id= await Groupe.findOne({nom:name});
+    return await userModel.find({
+        'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)
+        }
+    }).select({"password":0,"vers":0,"preferences":0})
+}
+
+exports.filtreMulticritereUser=async(user)=>{
+    console.log(user.createdAt);
+    if(user.createdAt!=""){
+        console.log("greatThan OR lessThan");
+    }
+    console.log(user);
+    return await userModel.find(user);
+}
 
 exports.createUser=async(user)=>{
+    
     return await userModel.create(user);
 };
 
 exports.getUserById=async(id)=>{
-    return await userModel.findById(id);
+    return await userModel.findById(id).select({"password":0,"estVerifie":0,"estActif":0,"vers":0});
 };
 

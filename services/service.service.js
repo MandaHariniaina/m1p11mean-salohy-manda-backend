@@ -56,3 +56,11 @@ exports.update = async (service) => {
 exports.save = async (service) => {
     return await Service.create(service);
 }
+
+exports.getPaginateService=async(page,limit)=>{
+    return await Service.find({}).limit(limit*1).skip((page-1)*limit).exec();
+}
+
+exports.getAllService=async()=>{
+    return await Service.find({});
+}
