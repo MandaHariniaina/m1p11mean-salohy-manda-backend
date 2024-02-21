@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const prestationSchema = new mongoose.Schema({
     montantTotal: Number,
@@ -45,6 +46,8 @@ const prestationSchema = new mongoose.Schema({
 {
     timestamps: true,
 });
+
+prestationSchema.plugin(mongoosePaginate);
 
 prestationSchema.pre('save', function (next) {
     if (this.isModified(['paiement', 'montantTotal'])){

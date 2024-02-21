@@ -28,6 +28,22 @@ exports.validateDateParams = async (req, res, next) => {
     }
 }
 
+exports.validateFindQuery = async (req, res, next) => {
+    try {
+        let validationSchema = yup.object().shape({
+            dateDebut: yup.date().notRequired(),
+            dateFin: yup.date().notRequired(),
+            page: yup.number().integer().default(1),
+            limit: yup.number().integer().default(10)
+        });
+        req.query = await validationSchema.validate(req.query);
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.errors });
+        return;
+    }
+}
+
 exports.validatePaiementRequestBody = async (req, res, next) => {
     try {
         let validationSchema = yup.object().shape({
