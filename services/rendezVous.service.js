@@ -13,27 +13,36 @@ exports.createPrestation = async (id) => {
         let detailsPrestation = [];
         for(let i = 0; i < rendezVous.prestations.length; i++){
             let prestation = rendezVous.prestations[i];
+            console.log(prestation.service.prixPromotion);
             detailsPrestation.push({
                 service: prestation.service.nom,
                 gestionnaire: prestation.gestionnaire,
-                montant: prestation.service.prix,
-                commission: prestation.service.commission,
+                // montant: prestation.service.prix,
+                montant: prestation.service.prixPromotion,
+                // commission: prestation.service.commission,
                 montantCommission: prestation.service.prix * prestation.service.commission / 100,
                 duree: prestation.service.duree
             });
         }
-        let prestation = await Prestation.create({
-            client: rendezVous.client,
-            gestionnaire: rendezVous.gestionnaire,
-            details: detailsPrestation,
-            session: session
-        });
+        let prestation = await Prestation.create(
+            [
+                {
+                    client: rendezVous.client,
+                    gestionnaire: rendezVous.gestionnaire,
+                    details: detailsPrestation
+                }
+            ], 
+            { 
+                session: session 
+            }
+        );
         rendezVous.estRealise = true;
         rendezVous = await rendezVous.save({ session: session });
         await session.commitTransaction();
         await session.endSession();
         return prestation;
     } catch (error) {
+        console.log(error);
         await session.abortTransaction();
         await session.endSession();
         throw new Error("Erreur survenue pendant l'enregistrement de la prestation");

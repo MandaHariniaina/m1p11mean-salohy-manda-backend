@@ -28,6 +28,11 @@ verifyToken = (req, res, next) => {
         config.secret,
         async (err, decoded) => {
             if (err) {
+                if (err instanceof jwt.JsonWebTokenError){
+                    return res.status(401).send({
+                        message: "Jeton expiré!",
+                    });
+                }
                 return res.status(401).send({
                     message: "Non autorisé!",
                 });
@@ -36,6 +41,11 @@ verifyToken = (req, res, next) => {
             let user;
             try {
                 user = await User.findById(decoded.id).populate(['groupes', 'preferences']);
+                if (!user){
+                    return res.status(401).send({
+                       message: "Non autorisé" 
+                    });
+                }
                 req.user = user;
             } catch (error){
                 res.status(500).send({ message: err.message });

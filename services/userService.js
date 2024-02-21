@@ -1,7 +1,80 @@
 const { log } = require("winston");
-const { user, mongoose } = require("../models");
+const { user, prestation: Prestation } = require("../models");
+const mongoose = require("mongoose");
 const userModel=require("../models/user.model");
 const { CompteMontantError } = require("../exceptions");
+
+// TODO optimization of employe find request
+exports.getTempsTravailMoyen = async () => {
+    let retour = [];
+    let employes = await userModel.find({ }).populate('groupes').select('groupes nom prenom estVerifie estActif email');
+    employes = employes.filter(employe => employe.groupes.some(groupe => groupe.nom === 'employe'));
+    for(let i = 0; i < employes.length; i++){
+        let employe = employes[i];
+        let jourDeTravail = await this.getJourTravail(employe._id);
+        let heuresDeTravail = await this.getHeureTravail(employe._id);
+        if (jourDeTravail != 0){
+            var tempsTravailMoyen = heuresDeTravail / jourDeTravail;
+        } else {
+            var tempsTravailMoyen = 0;
+        }
+        retour.push({
+            employe: employe,
+            tempsTravailMoyen,
+        });
+    }
+    return retour;
+};
+
+exports.getHeureTravail = async (id) => {
+    let heureTravail = await Prestation.aggregate([
+        {
+            $match: {
+                gestionnaire: id
+            }
+        },
+        {
+            $group: {
+                _id: "$user",
+                sum: {
+                    $sum: "$duree"
+                }
+            }
+        }
+    ]);
+    if (heureTravail.length > 0) return heureTravail[0].sum / 60;
+    return 0;
+}
+
+exports.getJourTravail = async (id) => {
+    let jourTravail = await Prestation.aggregate([
+        {
+            $match: {
+                gestionnaire: id
+            }
+        },
+        {
+            $project: {
+                date: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$createdAt"
+                    }
+                }
+            }
+        },
+        {
+          $group: {
+            _id: "$date",
+            count: {
+              $sum: 1
+            }
+          }
+        }
+    ]);
+    if (jourTravail.length > 0) return jourTravail[0].count;
+    return 0;
+};
 
 exports.compte = async (userId, data) => {
     let user = await userModel.findById(userId);

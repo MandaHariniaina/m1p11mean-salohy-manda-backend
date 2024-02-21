@@ -3,6 +3,15 @@ const userService=require("../services/userService");
 const userModel=require("../models/user.model")
 const { CompteMontantError } = require("../exceptions");
 
+exports.getTempsTravailMoyen = async (req, res) => {
+    try {
+        let tempsTravailMoyen = await userService.getTempsTravailMoyen();
+        return res.status(200).send(tempsTravailMoyen);
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+};
+
 exports.getProfile = async (req, res) => {
     try {
         let user = req.user;
@@ -34,11 +43,21 @@ exports.updatePreference = async (req, res) => {
     }
 }
 
+exports.activate = async (req, res) => {
+    try{
+        await userService.updateUser({ '_id': req.body.id, 'estActif': true });
+        let user = await userService.getUserById(req.body.id);
+        return res.status(200).send(user);
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+
 exports.deactivate = async (req, res) => {
     try{
         await userService.updateUser({ '_id': req.body.id, 'estActif': false });
         let user = await userService.getUserById(req.body.id);
-        return res.status(200).send({ user: user, message: "Compte utilisateur désactivé" })
+        return res.status(200).send(user);
     } catch (error) {
         return res.status(500).send({ message: error.message });
     }

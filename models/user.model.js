@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { SchemaTypes } = mongoose;
 const crypo = require('crypto');
+const Prestation = require("./prestation.model");
 
 const userSchema = new mongoose.Schema({
     nom: {

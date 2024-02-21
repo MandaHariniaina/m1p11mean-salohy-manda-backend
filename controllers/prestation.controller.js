@@ -2,6 +2,32 @@ const { prestationService } = require('../services');
 const mongooseError = require('mongoose').Error;
 const { CompteMontantError, CompteInexistantError } = require("../exceptions");
 
+exports.find = async (req, res) => {
+    try {
+        let user = req.user;
+        let userGroupes = [];
+        user.groupes.forEach(groupe => {
+            userGroupes.push(groupe.nom);
+        });
+        // If user is an administrateur
+        if(userGroupes.includes("administrateur")){
+            var prestations = await prestationService.find('administrateur', null, req.query.dateDebut, req.query.dateFin, req.query.page, req.query.limit);
+        } 
+        // If user is an employe
+        else if (userGroupes.includes("employe")) { 
+            var prestations = await prestationService.find('employe', req.user._id, req.query.dateDebut, req.query.dateFin, req.query.page, req.query.limit);
+        }
+        // If user is a client
+        else if (userGroupes.includes("client")) { 
+            var prestations = await prestationService.find('client', req.user._id, req.query.dateDebut, req.query.dateFin, req.query.page, req.query.limit);
+        }
+        // If user is an admin
+        return res.status(200).send(prestations);
+    } catch (error) {
+        return res.status(500).send({ message: "Erreur du serveur." });
+    }
+};
+
 exports.getEmployePourcentageCommissionByDate = async (req, res) => {
     try {
         let pourcentageCommission = await prestationService.getPourcentageCommissionByDate(req.user._id, req.params.date);
@@ -15,15 +41,6 @@ exports.getEmployeMontantCommissionByDate = async (req, res) => {
     try {
         let montantCommission = await prestationService.getMontantCommissionByDate(req.user._id, req.params.date);
         return res.status(200).send({ montantCommission });
-    } catch (error) {
-        return res.status(500).send({ message: "Erreur du serveur." });
-    }
-}
-
-exports.findEmployePrestationByDate = async (req, res) => {
-    try {
-        let prestations = await prestationService.findEmployePrestationByDate(req.user._id, req.params.date);
-        return res.status(200).send(prestations);
     } catch (error) {
         return res.status(500).send({ message: "Erreur du serveur." });
     }

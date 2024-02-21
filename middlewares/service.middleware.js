@@ -1,6 +1,48 @@
 const yup = require('yup');
 const { isValidObjectId } = require('mongoose');
 
+exports.validatePromotionRequestBody = async (req, res, next) => {
+    try{
+        const validationSchema = yup.object().shape({
+            id: yup
+                .string()
+                .required()
+                .transform( value => {
+                    if (isValidObjectId(value)) return value;
+                    return '';
+                }),
+            description: yup.string().required(),
+            pourcentageReduction: yup.number().integer().min(0).max(100),
+            dateDebut: yup
+                .date()
+                .transform((value, originalValue) => {
+                    let dateWithoutTz = new Date(originalValue);
+                    return dateWithoutTz;
+                })
+                .min(new Date(), 'Veuillez choisir une date à venir')
+                .required('La date de debut est requise'),
+            dateFin: yup
+                .date()
+                .when('dateDebut', ([dateDebut], schema) => {
+                    if (dateDebut) {
+                        return schema.min(dateDebut, 'La date de fin doit être ultérieur à la date de début');
+                    }
+                    return schema;
+                })
+                .required('La date de fin est requise')
+                .transform((value, originalValue) => {
+                    let dateWithoutTz = new Date(originalValue);
+                    return dateWithoutTz;
+                }),
+        });
+        req.body = await validationSchema.validate(req.body);
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.errors });
+        return;
+    }
+};
+
 exports.validateGetRequestQuery = async (req, res, next) => {
     try{
         const validationSchema = yup.object().shape({

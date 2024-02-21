@@ -56,17 +56,23 @@ exports.getMontantCommissionByDate = async (id, date) => {
     else return 0;
 };
 
-exports.findEmployePrestationByDate = async (id, date) => {
-    let dateDebut = new Date(date);
-    let dateFin = new Date(date);
-    dateFin.setMonth(dateFin.getMonth() + 1);
-    let prestations = await Prestation.find({ 
-        gestionnaire: id,
-        createdAt: {
-            $gte: dateDebut,
-            $lt: dateFin
-        }
-    });
+exports.find = async (groupe, userId, dateDebut, dateFin, page, limit) => {
+    let filter = {};
+    if (groupe === 'administrateur'){
+    } else if (groupe === 'employe'){
+        filter["gestionnaire"] = userId;
+    } else if (groupe === 'client'){
+        filter["client"] = userId;
+    } else {
+        throw new Error(`Le groupe: ${groupe} ne devrait pas exister`);
+    }
+    if (dateDebut) {
+        filter["dateDebut"] = { $gte: dateDebut };
+    }
+    if (dateFin) {
+        filter["dateFin"] = { $lt: dateFin };
+    }
+    let prestations = await Prestation.paginate( filter, {page, limit, sort: { createdAt: 'desc' }, customLabels: config.mongoosePaginate.customLabels} );
     return prestations;
 };
 
