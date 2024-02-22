@@ -17,7 +17,7 @@ router.get('/manager/find', [authJwt.verifyToken, serviceMiddleware.validateGetR
 router.delete('/manager/deleteService', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceDeleteRequestBody], controller.delete);
 router.put('/manager/updateService', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceUpdateRequestBody], controller.update);
 //router.post('/', [authJwt.verifyToken, authJwt.estAdmin, serviceMiddleware.validateServiceCreateRequestBody], controller.create);
-router.post('/manager/create', controller.createService);
-router.get('/manager/getAll',controller.findAllService);
-router.get('/manager/allService',controller.findAllPaginateService);
+router.post('/manager/create', [authJwt.verifyToken, authJwt.estAdmin], controller.createService);
+router.get('/manager/getAll', [authJwt.verifyToken, authJwt.estAdmin],controller.findAllService);
+router.get('/manager/allService', [authJwt.verifyToken, authJwt.estAdmin],controller.findAllPaginateService);
 module.exports = router;
