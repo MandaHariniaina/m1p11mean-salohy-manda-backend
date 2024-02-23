@@ -52,7 +52,9 @@ exports.update = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
+    console.log(req.body);
     try{
+        
         req.body.client = req.user._id
         const rendezVous = await rendezVousService.create(req.body);
         return res.status(201).send(rendezVous);
