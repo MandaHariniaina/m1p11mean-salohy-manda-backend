@@ -1,6 +1,7 @@
 const config = require("../config/auth.config");
+const projectConfig = require("../config/project.config")
 const db = require("../models");
-const { user: User, groupe: Groupe, refreshToken: RefreshToken } = db;
+const { user: User, groupe: Groupe, refreshToken: RefreshToken, authVerificationToken: AuthVerificationToken } = db;
 const { logger } = require("../config")
 const { mailService } = require("../services");
 
@@ -8,6 +9,32 @@ const mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { log } = require("winston");
+
+exports.verify = async (req, res) => {
+    const data = {
+        titre: `Verification de compte`,
+        lien: ``,
+        lienLabel: ``,
+        resultat: ``,
+    }
+    // Verification token
+    let authVerificationToken = await AuthVerificationToken.findOne({ token: req.query.token });
+    if (authVerificationToken == null) {
+        data.resultat = "Cette clé de vérification n'existe pas";
+    }
+    else if (AuthVerificationToken.verifyExpiration(authVerificationToken)) {
+        // AuthVerificationToken.findByIdAndRemove(authVerificationToken._id, { useFindAndModify: false }).exec();
+        // res.status(403).json({
+        //     message: "Votre clé de vérificaion a expiré. Veuillez vous renvoyer",
+        // });
+        // return;
+    } else {
+        let user = await User.findByIdAndUpdate(authVerificationToken.user, { estVerifie : true });
+        data.resultat = "Votre compte a été vérifié. Vous pouvez vous connecter"
+    }
+    // Render page
+    res.render('accountVerification', data);
+}
 
 exports.signupEmploye = async (req, res) => {
     const session = await mongoose.startSession();
@@ -54,13 +81,16 @@ exports.signup = async (req, res) => {
         let groupe = await Groupe.findOne({ nom: "client" });
         user.groupes = [groupe._id];
         await user.save({ session: session });
-        await mailService.sendConfirmationCompteMail(user.email);
+
+        // Email confirmation
+        const verificationToken = await AuthVerificationToken.createToken(user);
+        await mailService.sendConfirmationCompteMail(user, verificationToken);
         await session.commitTransaction();
         await session.endSession();
         return res.send({ message: "Utilisateur inscrit" });
 
     } catch (error) {
-
+        console.log(error);
         logger.error(error.message);
         await session.abortTransaction();
         await session.endSession();
@@ -69,7 +99,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = async (req, res) => {
-    let user = await User.findOne({ email: req.body.email });
+    let user = await User.findOne({ email: req.body.email }).populate("groupes preferences preferences.employes preferences.services");
     // Check email
     if (!user) {
         return res.status(401).send({ message: "Identifiant ou mot de passe erroné" });
@@ -110,11 +140,19 @@ exports.signin = async (req, res) => {
     // JWT
     // req.session.token = token;
 
+    delete user.password;
+    // user.preferences.forEach((preference) => {
+    //     preference.employes.forEach((employe) => {
+    //         delete employe.password;
+    //     });
+    // });
+
     res.status(200).send({
-        id: user._id,
-        nom: user.nom,
-        prenom: user.prenom,
-        email: user.email,
+        user,
+        // id: user._id,
+        // nom: user.nom,
+        // prenom: user.prenom,
+        // email: user.email,
         roles: authorities,
         accessToken: token,
         refreshToken: refreshToken,

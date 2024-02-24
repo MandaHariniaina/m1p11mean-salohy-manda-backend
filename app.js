@@ -13,6 +13,7 @@ const { fr } = require('yup-locales');
 var app = express();
 
 app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -104,11 +105,9 @@ app.use('/api/service',serviceRouter);
 app.listen(`${process.env.PORT}`, () => {   
 	console.log('Server is running on port'+`${process.env.PORT}`); 
 });*/
-app.listen(`${process.env.PORT}`, () => {   
-	console.log('Server is running on port'+`${process.env.PORT}`); 
-});
 var router = require('./routes');
 
+app.use('/auth', router.auth);
 app.use('/api/', router.index);
 app.use('/api/user', router.user);
 app.use('/api/auth', router.auth);

@@ -11,7 +11,8 @@ db.refreshToken = require("./refreshToken.model");
 db.service=require("./service.model");
 db.depense=require("./depense.model");
 db.prestation=require("./prestation.model");
-db.rendezvous=require("./rendezvous.model")
+db.rendezvous=require("./rendezvous.model");
+db.authVerificationToken = require("./authVerificationToken.model");
 
 db.GROUPES = ["client", "employe", "administrateur"];
 

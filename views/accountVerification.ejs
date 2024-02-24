@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verification d'adresse email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            margin-top: 20vh;
+        }
+        h1 {
+            color: #444;
+        }
+        p {
+            color: #666;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><%= titre %></h1>
+        <p class="result" ><%= resultat %></p>
+        <a href="<%= lien %>"><%= lienLabel %></a>
+    </div>
+</body>
+</html>
