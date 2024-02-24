@@ -63,9 +63,10 @@ exports.update = async (req, res) => {
 
 exports.create = async (req, res) => {
     try{
-        let service = await serviceService.save(req.body);
+        let service = await serviceService.save(req.body, req.file.filename);
         return res.status(201).send(service);
     } catch(error) {
+        console.log(error);
         if (error instanceof mongooseError.ValidationError){
             return res.status(400).send({ message: error.message });
         } else {

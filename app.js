@@ -12,6 +12,8 @@ const { fr } = require('yup-locales');
 /* App configuration  */
 var app = express();
 
+app.use(express.static('public'));
+
 app.use(logger('dev'));
 app.use(express.json());
 

@@ -1,6 +1,9 @@
 const Service = require('../models/service.model');
 const mongoose = require('mongoose');
 const config = require('../config');
+const fs = require('fs');
+const { projectConfig }  = require("../config");
+const path = require('path');
 
 exports.createPromotion = async (id, data) => {
     let service = await Service.findById(id);
@@ -53,7 +56,12 @@ exports.update = async (service) => {
     return await Service.findById(id);
 }
 
-exports.save = async (service) => {
+exports.save = async (service, filename) => {
+    service.image = filename;
+    // service.image = {
+    //     data: fs.readFileSync( file ),
+    //     contentType: 'image/png'
+    // }
     return await Service.create(service);
 }
 

@@ -11,6 +11,7 @@ const serviceSchema = new mongoose.Schema({
         unique: true,
         collation: { locale: 'fr', strength: 2 }
     },
+    image: String,
     prix: {
         type: Number,
         required: [true, 'Le prix du service est requis'],
