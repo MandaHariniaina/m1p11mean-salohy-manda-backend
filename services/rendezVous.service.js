@@ -68,7 +68,7 @@ exports.findByClient = async (userId, page, limit) => {
 };
 
 exports.findByGestionnaire = async (userId, page, limit) => {
-    return await RendezVous.paginate({ gestionnaire: userId }, { page, limit, sort: {createdAt: 'desc'}, customLabels: config.mongoosePaginate.customLabels });
+    return await RendezVous.paginate({ gestionnaire: userId }, { page, limit, sort: {createdAt: 'desc'}, customLabels: config.mongoosePaginate.customLabels, populate: 'gestionnaire prestations.service' });
 };
 
 exports.update = async (id, data) => {
