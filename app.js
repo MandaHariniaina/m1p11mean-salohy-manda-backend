@@ -102,7 +102,9 @@ app.use('/api/service',serviceRouter);
 app.listen(`${process.env.PORT}`, () => {   
 	console.log('Server is running on port'+`${process.env.PORT}`); 
 });*/
-
+app.listen(`${process.env.PORT}`, () => {   
+	console.log('Server is running on port'+`${process.env.PORT}`); 
+});
 var router = require('./routes');
 
 app.use('/api/', router.index);
