@@ -97,6 +97,19 @@ exports.allPersonnel= async (req,res)=>{
 }
 
 exports.allPersonnelEmploye= async (req,res)=>{
+    const {name="employe",page=0,limit=0}=req.query;
+    try{
+        const dataUser=await userService.findByGroupName(name,page,limit);
+        const count=(await userService.findByGroupName(name,0,0)).length;
+        res.status(200).send({data:dataUser,totalPages: Math.ceil(count / limit),
+        currentPage: page,totalItems:count});
+    }
+    catch(err){
+        res.status(500).send({error:err.message});
+    }
+}
+
+exports.allPersonnelEmployePaginate= async (req,res)=>{
     const {name="employe"}=req.query;
     try{
         const dataUser=await userService.findByGroupName(name);

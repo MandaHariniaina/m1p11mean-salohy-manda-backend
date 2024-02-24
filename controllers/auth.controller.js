@@ -156,6 +156,7 @@ exports.signin = async (req, res) => {
         roles: authorities,
         accessToken: token,
         refreshToken: refreshToken,
+        data:user
     });
 
 };

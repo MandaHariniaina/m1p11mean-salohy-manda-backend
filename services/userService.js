@@ -135,13 +135,22 @@ exports.getEmploye=async()=>{
         }
     });
 }
-exports.findByGroupName=async(name)=>{
+exports.findByGroupName=async(name,page,limit)=>{
     let groupe_id= await Groupe.findOne({nom:name});
-    return await userModel.find({
-        'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)
-        }
-    }).select({"password":0,"vers":0,"preferences":0})
+    if(page==0 && limit==0){     
+        return await userModel.find({
+            'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)
+            }
+        }).select({"password":0,"vers":0,"preferences":0})
+    }
+    else{
+        return await userModel.find({
+            'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)
+            }
+        }).limit(limit*1).skip((page-1)*limit).select({"password":0,"vers":0,"preferences":0})
+    }
 }
+
 
 exports.filtreMulticritereUser=async(user)=>{
     console.log(user.createdAt);
