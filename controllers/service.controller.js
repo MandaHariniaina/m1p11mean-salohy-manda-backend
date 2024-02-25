@@ -62,8 +62,10 @@ exports.update = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
+    const getService=JSON.parse(JSON.stringify(req.body));
+    console.log(JSON.parse(getService.service));
     try{
-        let service = await serviceService.save(req.body, req.file.filename);
+        let service = await serviceService.save(JSON.parse(getService.service), req.file.filename);
         return res.status(201).send(service);
     } catch(error) {
         console.log(error);

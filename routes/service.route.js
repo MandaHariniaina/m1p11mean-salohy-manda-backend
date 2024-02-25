@@ -22,6 +22,7 @@ router.put('/manager/updateService', [authJwt.verifyToken, authJwt.estAdmin, ser
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        console.log(projectConfig.projectDirectory);
         cb(null, projectConfig.projectDirectory + '/public/images');
     },
     filename: (req, file, cb) => {
@@ -31,7 +32,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-router.post('/manager/create', [authJwt.verifyToken, authJwt.estAdmin, upload.single('image')], controller.create);
+router.post('/manager/create', [  upload.single('image')], controller.create);
 router.get('/manager/getAll', [authJwt.verifyToken],controller.findAllService);
 router.get('/manager/allService', [authJwt.verifyToken, authJwt.estAdmin],controller.findAllPaginateService);
 module.exports = router;
