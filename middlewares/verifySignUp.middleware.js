@@ -4,7 +4,9 @@ const User = db.user;
 const yup = require('yup');
 
 validateRequestBody = async (req, res, next) => {
-    try{
+    console.log("tonga");
+    console.log(req.image);
+        try{
         const signUpSchema = yup.object().shape({
             nom: yup.string().lowercase().required(),
             prenom: yup.string().lowercase().required(),

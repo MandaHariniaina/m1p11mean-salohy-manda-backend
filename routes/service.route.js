@@ -22,8 +22,9 @@ router.put('/manager/updateService', [authJwt.verifyToken, authJwt.estAdmin, ser
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        console.log("tongaaaaaaaaaaaaaaaaaaaaa");
         console.log(projectConfig.projectDirectory);
-        cb(null, projectConfig.projectDirectory + '/public/images');
+        cb(null, projectConfig.projectDirectory + '/public/images/services');
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now())

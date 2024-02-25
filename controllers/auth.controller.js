@@ -66,16 +66,24 @@ exports.signupEmploye = async (req, res) => {
 }
 
 exports.signup = async (req, res) => {
+    //console.log("tonga");
+    //console.log(req.body)
+    //console.log(JSON.parse(JSON.stringify(req.body)));
+    const parseBody=JSON.parse(JSON.stringify(req.body));
     const session = await mongoose.startSession();
+    const getUser=JSON.parse(parseBody.user)
+   
     session.startTransaction();
-    let user = new User({ 
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password),
+    
+     let user = new User({ 
+        nom: getUser.nom,
+        prenom: getUser.prenom,
+        email: getUser.email,
+        password: bcrypt.hashSync(getUser.password),
         salt: "random-salt",
     });
-
+    //console.log(user);
+   
     try {
         user = await user.save({ session: session });
         let groupe = await Groupe.findOne({ nom: "client" });
@@ -149,7 +157,7 @@ exports.signin = async (req, res) => {
 
     res.status(200).send({
         user,
-        // id: user._id,
+         id: user._id,
         // nom: user.nom,
         // prenom: user.prenom,
         // email: user.email,

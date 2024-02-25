@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Nom obligatoire"],
         trim: true,
     },
+    image: String,
     prenom: {
         type: String,
         required: [true, "Prénom(s) obligatoire(s)"],

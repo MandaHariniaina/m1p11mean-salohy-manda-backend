@@ -52,6 +52,7 @@ exports.update = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
+    console.log("tonga");
     console.log(req.body);
     try{
         
@@ -59,6 +60,7 @@ exports.create = async (req, res) => {
         const rendezVous = await rendezVousService.create(req.body);
         return res.status(201).send(rendezVous);
     } catch (error) {
+        console.log("tonga");
         return res.status(500).send({ message: error.message });
     }
 }
