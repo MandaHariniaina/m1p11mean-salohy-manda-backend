@@ -60,15 +60,60 @@ exports.estRealise = async (id) => {
 };
 
 exports.findRappel = async () => {
-    // TODO implementation
+    const dateInfFilter = new Date();
+    const dateSupFilter = new Date();
+    dateSupFilter.setDate(dateSupFilter.getDate() + 3);
+    var listeRendezVous = await RendezVous.find({ date: { $lte: dateSupFilter, $gte: dateInfFilter } }).populate("client gestionnaire prestations.service");
+    console.log(listeRendezVous);
+    return listeRendezVous;
 };
 
-exports.findByClient = async (userId, page, limit) => {
-    return await RendezVous.paginate({ client: userId }, {page, limit, sort: { createdAt: 'desc'} , customLabels: config.mongoosePaginate.customLabels, populate: 'gestionnaire prestations.service' });
+exports.findByClient = async (userId, q = "", page, limit) => {
+    const regex = new RegExp(`.*${q}.*`, 'i');
+    let filter = {
+        client: userId
+    }
+    if (q !== "" & q != null) {
+        filter["$or"] = [{ 'gestionnaire.nom': regex }];
+    }
+    console.log(filter);
+    return await RendezVous.paginate(
+        // filter, 
+        {
+            client: userId,
+            // $or: [{ 'gestionnaire.nom': regex }]
+        },
+        { 
+            page, 
+            limit, 
+            sort: { createdAt: 'desc'} , 
+            customLabels: config.mongoosePaginate.customLabels, 
+            populate: [
+                { path:'gestionnaire', select: 'service' },
+                { path:'prestations.service', select: 'nom' },
+            ]
+            // populate: 'gestionnaire prestations.service prestations.service.nom' 
+        }
+    );
 };
 
-exports.findByGestionnaire = async (userId, page, limit) => {
-    return await RendezVous.paginate({ gestionnaire: userId }, { page, limit, sort: {createdAt: 'desc'}, customLabels: config.mongoosePaginate.customLabels, populate: 'client prestations.service' });
+exports.findByGestionnaire = async (userId, q, page, limit) => {
+    const regex = new RegExp(`.*${q}.*`, 'i');
+    return await RendezVous.paginate(
+        { 
+            gestionnaire: userId,
+            $or: [
+                { 'client.nom': regex }
+            ]
+        }, 
+        { 
+            page, 
+            limit, 
+            sort: {createdAt: 'desc'}, 
+            customLabels: config.mongoosePaginate.customLabels, 
+            populate: 'client prestations.service' 
+        }
+    );
 };
 
 exports.update = async (id, data) => {

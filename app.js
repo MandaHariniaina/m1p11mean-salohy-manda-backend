@@ -8,6 +8,7 @@ const db = require("./models");
 require('dotenv').config();
 const { setLocale } = require('yup');
 const { fr } = require('yup-locales');
+const cron = require('./cron');
 
 /* App configuration  */
 var app = express();
@@ -122,5 +123,9 @@ app.use('/api/rendezVous', router.rendezVous);
 app.use('/api/prestation', router.prestation);
 
 /* ---------- */
+
+/* CRON */
+cron.rendezVousCron.rappel();
+/* ---- */
 
 module.exports = app;

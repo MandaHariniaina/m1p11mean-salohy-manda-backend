@@ -32,9 +32,9 @@ exports.findAll = async (req, res) => {
             }
         });
         if (estEmploye){
-            rendezVous = await rendezVousService.findByGestionnaire(req.user._id, req.query.page, req.query.limit);
+            rendezVous = await rendezVousService.findByGestionnaire(req.user._id, req.query.q, req.query.page, req.query.limit);
         } else {
-            rendezVous = await rendezVousService.findByClient(req.user._id, req.query.page, req.query.limit);
+            rendezVous = await rendezVousService.findByClient(req.user._id, req.query.q, req.query.page, req.query.limit);
         }
         return res.status(200).send(rendezVous);
     } catch (error) {
