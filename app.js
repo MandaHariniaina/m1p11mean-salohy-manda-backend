@@ -29,7 +29,7 @@ app.use(cors({
                        // or Authorization header. Otherwise the
                        // browser will block the response.
 
-    methods: 'POST,GET,PUT,OPTIONS,DELETE' // Make sure you're not blocking
+    methods: 'POST,GET,PUT,OPTIONS,DELETE,PATCH' // Make sure you're not blocking
                                            // pre-flight OPTIONS requests
 }))
 

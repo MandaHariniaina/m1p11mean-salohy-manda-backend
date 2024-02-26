@@ -37,14 +37,20 @@ exports.compte = async (req, res) => {
 
 exports.updatePreference = async (req, res) => {
     try{
-        let user = await userService.updatePreference(req.user._id, req.body);
-        return res.status(200).send({ user: user, message: "Compte utilisateur désactivé" })
+        console.log(req.body._id)
+        console.log(req.body.preferences[0])
+        //let user = await userService.updatePreference(req.user._id, req.body);
+        let user = await userService.updatePreference(req.body._id, req.body.preferences[0]);
+        return res.status(200).send({ user: user, message: "Préference ajouter" })
     } catch (error) {
         console.log(error);
         return res.status(500).send({ message: error.message });
     }
 }
 
+exports.getPreference=async(req,res)=>{
+
+}
 exports.activate = async (req, res) => {
     try{
         await userService.updateUser({ '_id': req.body.id, 'estActif': true });
