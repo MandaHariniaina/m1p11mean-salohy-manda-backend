@@ -3,6 +3,32 @@ const { isValidObjectId } = require('mongoose');
 const db = require('../models');
 const { user: User, service: Service } = db;
 
+validateUpdateHoraireTravailRequestBody = async (req, res, next) => {
+    try {
+        let validationSchema = yup.object().shape({
+            id: yup
+                .string()
+                .required()
+                .transform( value => {
+                    if (isValidObjectId(value)) return value;
+                    return '';
+                }),
+            heureDebut: yup.number().required(),
+            minuteDebut: yup.number().default(0),
+            heureFin: yup.number().required(),
+            minuteFin: yup.number().default(0),
+        });
+        req.body = await validationSchema.validate(req.body);
+        if ((req.body.heureDebut * 60 + req.body.minuteDebut) >= (req.body.heureFin * 60 + req.body.minuteFin)){
+            throw new Error("L'heure de début de travail doit être antérieure à l'heure de fin de travail.")
+        }
+        next();
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+        return;
+    }
+};
+
 validateCompteRequestBody = async (req, res, next) => {
     try {
         let validationSchema = yup.object().shape({
@@ -93,6 +119,7 @@ const userMiddleware = {
     validateCompteRequestBody,
     validateDeactivateRequestParams,
     validatePreferenceRequestBody,
+    validateUpdateHoraireTravailRequestBody
 };
 
 module.exports = userMiddleware;

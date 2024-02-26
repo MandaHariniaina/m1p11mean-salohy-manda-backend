@@ -67,9 +67,12 @@ const userSchema = new mongoose.Schema({
         }],
     }],
     horaireTravail: {
-        entree: { type: Date },
-        sortie: { type: Date },
-        duree: { type: Number },
+        type: {
+            heureDebut: Number,
+            minuteDebut: Number,
+            heureFin: Number,
+            minuteFin: Number,
+        }
     },
     vers: {
         type: Number,

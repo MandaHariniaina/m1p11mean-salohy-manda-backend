@@ -5,6 +5,16 @@ const { MongooseError } = require("mongoose");
 const userModel=require("../models/user.model")
 const { CompteMontantError } = require("../exceptions");
 
+exports.setHoraireTravail = async (req, res) => {
+    try {
+        const user = await userService.updateHoraireTravail(req.body.id, req.body.heureDebut, req.body.minuteDebut, req.body.heureFin, req.body.minuteFin);
+        console.log(user);
+        return res.status(200).send(user);
+    }  catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+
 exports.getTempsTravailMoyen = async (req, res) => {
     try {
         let tempsTravailMoyen = await userService.getTempsTravailMoyen();

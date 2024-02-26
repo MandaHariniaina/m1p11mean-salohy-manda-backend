@@ -122,6 +122,17 @@ exports.updateStatusEmploye=async(user_id,status)=>{
     }).select({"password":0});
 }//modification status utilisateur
 
+exports.updateHoraireTravail = async (id, heureDebut, minuteDebut, heureFin, minuteFin) => {
+    return await userModel.findByIdAndUpdate(id, {
+        horaireTravail: {
+            heureDebut: heureDebut,
+            minuteDebut: minuteDebut,
+            heureFin: heureFin,
+            minuteFin: minuteFin,
+        }
+    }).select({"password":0});
+}
+
 exports.updateUser=async(body)=>{
     return await userModel.findByIdAndUpdate(body._id,body,{
         new:true

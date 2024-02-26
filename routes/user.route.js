@@ -3,6 +3,7 @@ const controller = require("../controllers/user.controller");
 var express = require('express');
 var router = express.Router();
 
+router.patch('/horaireTravail', [authJwt.verifyToken, authJwt.estAdmin, userMiddleware.validateUpdateHoraireTravailRequestBody], controller.setHoraireTravail);
 router.get('/tempsTravail', [authJwt.verifyToken, authJwt.estAdmin], controller.getTempsTravailMoyen);
 router.get('/profile', [authJwt.verifyToken], controller.getProfile);
 router.put('/compte', [authJwt.verifyToken, userMiddleware.validateCompteRequestBody], controller.compte);
