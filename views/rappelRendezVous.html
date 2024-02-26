@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Reminder</title>
+    <style>
+        /* Add your custom styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rappel de rendez-vous</h1>
+        <p>Cher {{client}},</p>
+        <p>Ceci est un rappel pour votre rendez-vous plannifé avec {{gestionnaire}}</p>
+        <p><strong>Détails du rendez-vous:</strong></p>
+        <ul>
+            <li><strong>Date et heure:</strong> {{date}}</li>
+            <li><strong>Services à réaliser:</strong> {{services}}</li>
+        </ul>
+        <p>Si vous avez des questions ou si vos avez besoin de revoir votre planning, vous pouvez vous rendre sur notre application en ligne.</p>
+        <p>Nous attendons avec impatience votre arrivée!</p>
+    </div>
+</body>
+</html>
