@@ -126,7 +126,7 @@ app.use('/api/prestation', router.prestation);
 
 /* CRON */
 // cron.rendezVousCron.rappel.start();
-cron.serviceCron.notifierPromotion.start();
+// cron.serviceCron.notifierPromotion.start();
 /* ---- */
 
 module.exports = app;
