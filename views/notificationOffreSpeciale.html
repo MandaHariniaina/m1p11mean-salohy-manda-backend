@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offres Promotionnelles</title>
+    <style>
+        /* Styles spécifiques pour l'e-mail */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+        .promo {
+            background-color: rgb(255, 234, 238);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .promo h3 {
+            color: black;
+        }
+        .promo p {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Offres Spéciales - Queen Beauty 🎉🛒</h1>
+        <p><small>{{ date }}</small></p>
+        <div class="promo">
+            <h3>{{ promotions }}</h3>
+        </div>
+        <p>Merci de faire partie de notre communauté !</p>
+    </div>
+</body>
+</html>

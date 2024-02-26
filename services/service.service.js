@@ -5,6 +5,18 @@ const fs = require('fs');
 const { projectConfig }  = require("../config");
 const path = require('path');
 
+exports.getPromotions = async(id, data) => {
+    let currentDate = new Date();
+    let servicesPromotions = await Service.aggregate([
+        { $unwind: "$promotions" },
+        { $match: {
+            "promotions.dateDebut": { $lte: currentDate },
+            "promotions.dateFin": { $gte: currentDate }
+        }}
+    ])
+    return servicesPromotions;
+}
+
 exports.createPromotion = async (id, data) => {
     let service = await Service.findById(id);
     service.promotions.push(data);

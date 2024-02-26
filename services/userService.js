@@ -146,6 +146,7 @@ exports.getEmploye=async()=>{
         }
     });
 }
+
 exports.findByGroupName=async(name,page,limit)=>{
     let groupe_id= await Groupe.findOne({nom:name});
     if(page==0 && limit==0){     

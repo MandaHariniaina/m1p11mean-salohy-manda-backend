@@ -14,6 +14,34 @@ var readHTMLFile = function(path, callback) {
     });
 };
 
+exports.sendNotificationOffreSpecial  = async(client, servicePromotions) => {
+    readHTMLFile(projectConfig.projectDirectory + '/views/notificationOffreSpeciale.html', function(err, html) {
+        var template = handlebars.compile(html);
+        const dateFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        let servicePromotionsData = "";
+        for(let i = 0; i < servicePromotions.length; i++){
+            servicePromotionsData += `🎉${servicePromotions[i].promotions.description}
+            : remise de ${servicePromotions[i].promotions.pourcentageReduction} 
+            sur ${servicePromotions[i].nom} du ${servicePromotions[i].promotions.dateDebut.toLocaleDateString('fr-FR', dateFormatOptions)} 
+            jusqu'au ${servicePromotions[i].promotions.dateFin.toLocaleDateString('fr-FR', dateFormatOptions)}.\n`
+        }
+        var replacements = {
+            client: `${client.nom} ${client.prenom}`,
+            date: new Date().toLocaleDateString('fr-FR', dateFormatOptions),
+            promotions: servicePromotionsData,
+        };
+        var htmlToSend = template(replacements);
+        // Send confirmation mail
+        var mailOptions = {
+            from: process.env.MAIL_SENDER,
+            to: client.email,
+            subject: 'Offres spéciales',
+            html : htmlToSend
+        };
+        return transporter.sendMail(mailOptions);
+    });
+}
+
 exports.sendRappelRendezVous = async(client, date, gestionnaire, prestations) => {
     readHTMLFile(projectConfig.projectDirectory + '/views/rappelRendezVous.html', function(err, html) {
         var template = handlebars.compile(html);
@@ -37,8 +65,7 @@ exports.sendRappelRendezVous = async(client, date, gestionnaire, prestations) =>
         // Send confirmation mail
         var mailOptions = {
             from: process.env.MAIL_SENDER,
-            to: "andriamitantsoamanda@gmail.com",
-            // to: client.email,
+            to: client.email,
             subject: 'Rappel de rendez-vous',
             html : htmlToSend
         };
