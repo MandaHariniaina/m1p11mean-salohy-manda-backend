@@ -5,6 +5,7 @@ const { user: User, groupe: Groupe, refreshToken: RefreshToken, authVerification
 const { logger } = require("../config")
 const { mailService } = require("../services");
 
+
 const mongoose = require("mongoose");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -65,37 +66,38 @@ exports.signupEmploye = async (req, res) => {
     }
 }
 
+
+
+
 exports.signup = async (req, res) => {
-    //console.log("tonga");
-    //console.log(req.body)
-    //console.log(JSON.parse(JSON.stringify(req.body)));
-    const parseBody=JSON.parse(JSON.stringify(req.body));
-    const session = await mongoose.startSession();
-    const getUser=JSON.parse(parseBody.user)
    
-    session.startTransaction();
-    
+    //const parseBody=JSON.parse(JSON.stringify(req.body));
+    //const getUser=JSON.parse(req.body.user)
+    const session = await mongoose.startSession();
+    session.startTransaction();  
      let user = new User({ 
-        nom: getUser.nom,
-        prenom: getUser.prenom,
-        email: getUser.email,
-        password: bcrypt.hashSync(getUser.password),
+        nom: req.body.nom,
+        prenom: req.body.prenom,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password),
         salt: "random-salt",
     });
-    //console.log(user);
-   
-    try {
-        user = await user.save({ session: session });
-        let groupe = await Groupe.findOne({ nom: "client" });
-        user.groupes = [groupe._id];
-        await user.save({ session: session });
 
-        // Email confirmation
-        const verificationToken = await AuthVerificationToken.createToken(user);
-        await mailService.sendConfirmationCompteMail(user, verificationToken);
-        await session.commitTransaction();
-        await session.endSession();
-        return res.send({ message: "Utilisateur inscrit" });
+    try {
+        
+            user = await user.save({ session: session });
+            let groupe = await Groupe.findOne({ nom: "client" });
+            user.groupes = [groupe._id];
+            await user.save({ session: session });
+
+            // Email confirmation
+            const verificationToken = await AuthVerificationToken.createToken(user);
+            await mailService.sendConfirmationCompteMail(user, verificationToken);
+            await session.commitTransaction();
+            await session.endSession();
+            return res.send({ message: "Utilisateur inscrit" });
+        
+        
 
     } catch (error) {
         console.log(error);
@@ -207,6 +209,8 @@ exports.refreshToken = async (req, res) => {
         return res.status(500).send({ message: err });
     }
 };
+
+
 
 // exports.signout = async (req, res) => {
 //     try {

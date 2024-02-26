@@ -9,7 +9,6 @@ router.get('/verification', controller.verify);
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("tongaaaaaaaaaaaaaaaaaaaaa");
         console.log(projectConfig.projectDirectory);
         cb(null, projectConfig.projectDirectory + '/public/images/employe');
     },
@@ -24,7 +23,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage});
 
 /* api */
-router.post('/signup', [verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail, verifySignUp.checkGroupesExist,upload.single('image')], controller.signup);
+router.post('/signup', [upload.single('image'),verifySignUp.checkDuplicateEmail,verifySignUp.validateRequestBody], controller.signup);
 router.post('/signup/employe', 
     [authJwt.verifyToken, authJwt.estAdmin, verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail, verifySignUp.checkGroupesExist], 
     controller.signupEmploye);
