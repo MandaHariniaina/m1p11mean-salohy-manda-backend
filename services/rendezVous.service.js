@@ -64,7 +64,6 @@ exports.findRappel = async () => {
     const dateSupFilter = new Date();
     dateSupFilter.setDate(dateSupFilter.getDate() + 3);
     var listeRendezVous = await RendezVous.find({ date: { $lte: dateSupFilter, $gte: dateInfFilter } }).populate("client gestionnaire prestations.service");
-    console.log(listeRendezVous);
     return listeRendezVous;
 };
 
