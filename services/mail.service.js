@@ -14,6 +14,38 @@ var readHTMLFile = function(path, callback) {
     });
 };
 
+exports.sendRappelRendezVous = async(client, date, gestionnaire, prestations) => {
+    readHTMLFile(projectConfig.projectDirectory + '/views/rappelRendezVous.html', function(err, html) {
+        var template = handlebars.compile(html);
+        const dateFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        let servicesData = "";
+        for(let i = 0; i < prestations.length; i++){
+            servicesData += prestations[i].service.nom;
+            if (i != prestations.length - 1){
+                servicesData += ", ";
+            } else {
+                servicesData += ".";
+            }
+        }
+        var replacements = {
+            client: `${client.nom} ${client.prenom}`,
+            date: date.toLocaleDateString('fr-FR', dateFormatOptions),
+            gestionnaire: `${gestionnaire.nom} ${gestionnaire.prenom}`,
+            services: servicesData,
+        };
+        var htmlToSend = template(replacements);
+        // Send confirmation mail
+        var mailOptions = {
+            from: process.env.MAIL_SENDER,
+            to: "andriamitantsoamanda@gmail.com",
+            // to: client.email,
+            subject: 'Rappel de rendez-vous',
+            html : htmlToSend
+        };
+        return transporter.sendMail(mailOptions);
+    });
+}
+
 exports.sendConfirmationCompteMail = async (user, verificationToken) => {
     readHTMLFile(projectConfig.projectDirectory + '/views/userVerification.html', function(err, html) {
         var template = handlebars.compile(html);
