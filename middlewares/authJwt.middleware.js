@@ -48,7 +48,7 @@ verifyToken = (req, res, next) => {
                 }
                 req.user = user;
             } catch (error){
-                res.status(500).send({ message: err.message });
+                res.status(500).send({ message: error.message });
                 return;
             }
             if (user.estVerifie == false){

@@ -24,7 +24,7 @@ exports.findAll = async(page, limit, dateDebut, dateFin) => {
     if (dateFilter){
         depenses = await Depense.paginate({ createdAt: dateFilter }, {page, limit, sort: { createdAt: 'desc'}, customLabels: config.mongoosePaginate.customLabels});
     } else {
-        depenses = await Depense.paginate({}, {page, limit, sort: { createdAt: 'desc'}});
+        depenses = await Depense.paginate({}, {page, limit, sort: { createdAt: 'desc'}, customLabels: config.mongoosePaginate.customLabels});
     }
     return depenses;
 }

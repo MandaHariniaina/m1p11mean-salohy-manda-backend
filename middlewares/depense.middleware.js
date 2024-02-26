@@ -74,7 +74,7 @@ exports.validateCreateRequestBody = async (req, res, next) => {
         req.body = validatedBody;
         next();
     } catch (error) {
-        res.status(400).send({ message: error.errors });
+        res.status(400).send({ message: error });
         return;
     }
 };
