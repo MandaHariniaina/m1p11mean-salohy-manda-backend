@@ -35,5 +35,5 @@ var upload = multer({ storage: storage });
 
 router.post('/manager/create', [  upload.single('image')], controller.create);
 router.get('/manager/getAll', [authJwt.verifyToken],controller.findAllService);
-router.get('/manager/allService', [authJwt.verifyToken, authJwt.estAdmin],controller.findAllPaginateService);
+router.get('/manager/allService', [authJwt.verifyToken],controller.findAllPaginateService);
 module.exports = router;
