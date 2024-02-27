@@ -1,6 +1,8 @@
 const db = require("../models");
+const Groupe = db.groupe;
 const RendezVous = db.rendezvous;
 const Prestation = db.prestation;
+const Service = db.service;
 const config = require("../config");
 const User = db.user;
 const mongoose = require("mongoose");
@@ -42,7 +44,6 @@ exports.createPrestation = async (id) => {
         await session.endSession();
         return prestation;
     } catch (error) {
-        console.log(error);
         await session.abortTransaction();
         await session.endSession();
         throw new Error("Erreur survenue pendant l'enregistrement de la prestation");
@@ -68,19 +69,29 @@ exports.findRappel = async () => {
 };
 
 exports.findByClient = async (userId, q = "", page, limit) => {
+    const groupeEmploye = await Groupe.findOne({ nom: 'employe' });
     const regex = new RegExp(`.*${q}.*`, 'i');
-    let filter = {
-        client: userId
-    }
-    if (q !== "" & q != null) {
-        filter["$or"] = [{ 'gestionnaire.nom': regex }];
-    }
-    console.log(filter);
+    // Gestionnaire filtre
+    const gestionnaires = await User.find({ nom: regex, groupes: { $in: groupeEmploye } }).select("id");
+    var gestionnaireIds = [];
+    gestionnaires.forEach( gestionnaire => {
+        gestionnaireIds.push(gestionnaire._id);
+    });
+    // Service Filtre
+    const services = await Service.find({ nom: regex });
+    let serviceIds = []
+    services.forEach( service => {
+        serviceIds.push(service._id);
+    });
+
     return await RendezVous.paginate(
         // filter, 
         {
             client: userId,
-            // $or: [{ 'gestionnaire.nom': regex }]
+            $or: [
+                { gestionnaire: { $in: gestionnaireIds } },
+                { 'prestations.service': {$in: serviceIds} }
+            ]
         },
         { 
             page, 
