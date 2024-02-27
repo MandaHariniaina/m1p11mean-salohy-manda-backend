@@ -99,7 +99,7 @@ exports.findByClient = async (userId, q = "", page, limit) => {
             sort: { createdAt: 'desc'} , 
             customLabels: config.mongoosePaginate.customLabels, 
             populate: [
-                { path:'gestionnaire', select: 'service' },
+                { path:'gestionnaire', select: 'nom prenom' },
                 { path:'prestations.service', select: 'nom' },
             ]
             // populate: 'gestionnaire prestations.service prestations.service.nom' 
@@ -107,13 +107,28 @@ exports.findByClient = async (userId, q = "", page, limit) => {
     );
 };
 
-exports.findByGestionnaire = async (userId, q, page, limit) => {
+exports.findByGestionnaire = async (userId, q = "", page, limit) => {
+    const groupeClient = await Groupe.findOne({ nom: 'client' });
     const regex = new RegExp(`.*${q}.*`, 'i');
+    // Client filtre
+    const clients = await User.find({ nom: regex, groupes: { $in: groupeClient } }).select("id");
+    var clientIds = [];
+    clients.forEach( client => {
+        clientIds.push(client._id);
+    });
+    // Service Filtre
+    const services = await Service.find({ nom: regex });
+    let serviceIds = []
+    services.forEach( service => {
+        serviceIds.push(service._id);
+    });
+
     return await RendezVous.paginate(
         { 
             gestionnaire: userId,
             $or: [
-                { 'client.nom': regex }
+                { client: { $in: clientIds } },
+                { 'prestations.service': {$in: serviceIds} }
             ]
         }, 
         { 
@@ -121,7 +136,10 @@ exports.findByGestionnaire = async (userId, q, page, limit) => {
             limit, 
             sort: {createdAt: 'desc'}, 
             customLabels: config.mongoosePaginate.customLabels, 
-            populate: 'client prestations.service' 
+            populate: [
+                { path:'client', select: 'nom prenom' },
+                { path:'prestations.service', select: 'nom' },
+            ]
         }
     );
 };
