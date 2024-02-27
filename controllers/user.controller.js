@@ -99,9 +99,9 @@ exports.adminAccess = (req, res) => {
 };
 
 exports.allPersonnel= async (req,res)=>{
-    const {page=1,limit=10}=req.query;
+    const {q = "", page=1,limit=10}=req.query;
     try{
-        const dataUser=await userService.getPaginateEmploye(page,limit);
+        const dataUser=await userService.getPaginateEmploye(q, page,limit);
         const count=(await userService.getEmploye()).length;
         console.log(count);
         res.status(200).send({data:dataUser,totalPages: Math.ceil(count / limit),

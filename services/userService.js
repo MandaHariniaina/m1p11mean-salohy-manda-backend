@@ -108,11 +108,15 @@ exports.getAllUser=async()=>{
 
 };
 
-exports.getPaginateEmploye=async(page,limit)=>{
+exports.getPaginateEmploye=async(q = "", page, limit)=>{
     let groupe_id= await Groupe.findOne({nom:'employe'});
+    const regex = new RegExp(`.*${q}.*`, 'i');
     return await userModel.find({
-        'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)
-        }
+        'groupes': { $in: new mongoose.Types.ObjectId(groupe_id)},
+        $or: [
+            { nom: regex},
+            { prenom: regex}
+        ]
     }).limit(limit*1).skip((page-1)*limit).select({"password":0,"vers":0,"preferences":0});
 }
 
