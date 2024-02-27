@@ -19,7 +19,7 @@ exports.validatePromotionRequestBody = async (req, res, next) => {
                     let dateWithoutTz = new Date(originalValue);
                     return dateWithoutTz;
                 })
-                .min(new Date(), 'Veuillez choisir une date à venir')
+                // .min(new Date(), 'Veuillez choisir une date à venir')
                 .required('La date de debut est requise'),
             dateFin: yup
                 .date()
