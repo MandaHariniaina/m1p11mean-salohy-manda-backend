@@ -9,6 +9,8 @@ exports.find = async (req, res) => {
         user.groupes.forEach(groupe => {
             userGroupes.push(groupe.nom);
         });
+        console.log(req.query.dateDebut);
+        console.log(req.query.dateFin);
         // If user is an administrateur
         if(userGroupes.includes("administrateur")){
             var prestations = await prestationService.find('administrateur', null, req.query.dateDebut, req.query.dateFin, req.query.page, req.query.limit);
