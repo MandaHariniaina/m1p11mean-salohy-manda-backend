@@ -46,6 +46,7 @@ exports.signupEmploye = async (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
         salt: "random-salt",
+        image: req.file.filename
     });
 
     try {
@@ -66,25 +67,18 @@ exports.signupEmploye = async (req, res) => {
     }
 }
 
-
-
-
 exports.signup = async (req, res) => {
-   
-    //const parseBody=JSON.parse(JSON.stringify(req.body));
-    //const getUser=JSON.parse(req.body.user)
     const session = await mongoose.startSession();
     session.startTransaction();  
-     let user = new User({ 
+    let user = new User({ 
         nom: req.body.nom,
         prenom: req.body.prenom,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
         salt: "random-salt",
+        image: req.file.filename
     });
-
     try {
-        
             user = await user.save({ session: session });
             let groupe = await Groupe.findOne({ nom: "client" });
             user.groupes = [groupe._id];
@@ -97,9 +91,6 @@ exports.signup = async (req, res) => {
             await session.commitTransaction();
             await session.endSession();
             return res.send({ message: "Utilisateur inscrit" });
-        
-        
-
     } catch (error) {
         console.log(error);
         logger.error(error.message);
