@@ -50,7 +50,7 @@ exports.signupEmploye = async (req, res) => {
 
     try {
         user = await user.save({ session: session });
-        user.estActif = true;
+        user.estActif = false;
         let groupe = await Groupe.findOne({ nom: "employe" });
         user.groupes = [groupe._id];
         await user.save({ session: session });
@@ -88,6 +88,7 @@ exports.signup = async (req, res) => {
             user = await user.save({ session: session });
             let groupe = await Groupe.findOne({ nom: "client" });
             user.groupes = [groupe._id];
+            user.estActif = true;
             await user.save({ session: session });
 
             // Email confirmation
