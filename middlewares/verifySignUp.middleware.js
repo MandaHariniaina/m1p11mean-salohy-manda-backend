@@ -4,12 +4,7 @@ const User = db.user;
 const yup = require('yup');
 
 validateRequestBody = async (req, res, next) => {
-   
-    const parseBody=JSON.parse(JSON.stringify(req.body));
-    const getUser=JSON.parse(parseBody.user);
-   
-    //console.log(req.image);
-        try{
+    try {
         const signUpSchema = yup.object().shape({
             nom: yup.string().lowercase().required(),
             prenom: yup.string().lowercase().required(),
@@ -28,7 +23,7 @@ validateRequestBody = async (req, res, next) => {
                 .oneOf([yup.ref('password')], 'Les mots de passe doivent se ressembler')
                 .required("Confirmation mot de passe requis")
         });
-        const validatedBody = await signUpSchema.validate(getUser);
+        const validatedBody = await signUpSchema.validate(req.body);
         req.body = validatedBody;
         next();
     } catch (error) {
@@ -38,10 +33,8 @@ validateRequestBody = async (req, res, next) => {
 };
 
 checkDuplicateEmail = async (req, res, next) => {
-    
-    const getUser=JSON.parse(req.body.user);
-    console.log(getUser);
-    let userExists = await User.exists({ email: getUser.email })
+    const user = req.body;
+    let userExists = await User.exists({ email: user.email })
     if (userExists) {
         res.status(400).send({ message: "L'adresse email est déjà utilisée" });
         return;
@@ -50,8 +43,8 @@ checkDuplicateEmail = async (req, res, next) => {
 };
 
 checkGroupesExist = (req, res, next) => {
-    const parseBody=JSON.parse(JSON.stringify(req.body));
-    const getUser=JSON.parse(rq.body.user);
+    const parseBody = JSON.parse(JSON.stringify(req.body));
+    const getUser = JSON.parse(rq.body.user);
     if (getUser.groupes) {
         for (let i = 0; i < getUser.groupes.length; i++) {
             if (!GROUPES.includes(getUser.groupes[i])) {

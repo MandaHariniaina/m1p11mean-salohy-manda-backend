@@ -23,7 +23,7 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage});
 
 /* api */
-router.post('/signup', [upload.single('image'),verifySignUp.checkDuplicateEmail,verifySignUp.validateRequestBody], controller.signup);
+router.post('/signup', [upload.single('image'),verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail], controller.signup);
 router.post('/signup/employe', 
     [authJwt.verifyToken, authJwt.estAdmin, verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail, verifySignUp.checkGroupesExist], 
     controller.signupEmploye);
