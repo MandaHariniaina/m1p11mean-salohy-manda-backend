@@ -87,10 +87,12 @@ serviceSchema.plugin(mongoosePaginate);
 
 serviceSchema.virtual('estEnPromotion').get(function () {
     const currentDate = new Date();
-    for (let i = 0; i < this.promotions.length; i++) {
-        let promotion = this.promotions[i];
-        if (promotion.dateDebut <= currentDate && promotion.dateFin >= currentDate){
-            return true;
+    if (this.promotions){
+        for (let i = 0; i < this.promotions.length; i++) {
+            let promotion = this.promotions[i];
+            if (promotion.dateDebut <= currentDate && promotion.dateFin >= currentDate){
+                return true;
+            }
         }
     }
     return false;
@@ -98,10 +100,12 @@ serviceSchema.virtual('estEnPromotion').get(function () {
 
 serviceSchema.virtual('promotionActuelle').get(function () {
     const currentDate = new Date();
-    for (let i = 0; i < this.promotions.length; i++) {
-        let promotion = this.promotions[i];
-        if (promotion.dateDebut <= currentDate && promotion.dateFin >= currentDate){
-            return promotion;
+    if (this.promotions){
+        for (let i = 0; i < this.promotions.length; i++) {
+            let promotion = this.promotions[i];
+            if (promotion.dateDebut <= currentDate && promotion.dateFin >= currentDate){
+                return promotion;
+            }
         }
     }
     return null;
