@@ -7,7 +7,7 @@ router.post('/create', controller.createService);
 router.get('/getAll',controller.findAllService);
 router.get('/getAllPaginate',controller.finAllPaginateService);*/
 
-const { authJwt, serviceMiddleware } = require("../middlewares");
+const { authJwt, serviceMiddleware, imageMiddleware } = require("../middlewares");
 const controller = require("../controllers/service.controller");
 var express = require('express');
 var router = express.Router();
@@ -31,9 +31,12 @@ var storage = multer.diskStorage({
     }
 });
 
-var upload = multer({ storage: storage });
+var memStorage = multer.memoryStorage();
 
-router.post('/manager/create', [  upload.single('image')], controller.create);
+// var upload = multer({ storage: storage });
+var upload = multer({ storage: memStorage});
+
+router.post('/manager/create', [  upload.single('image'), imageMiddleware.uploadImage], controller.create);
 router.get('/manager/getAll', [authJwt.verifyToken],controller.findAllService);
 router.get('/manager/allService', [authJwt.verifyToken],controller.findAllPaginateService);
 module.exports = router;

@@ -1,4 +1,4 @@
-const { verifySignUp, verifySignIn, authJwt } = require("../middlewares");
+const { verifySignUp, verifySignIn, authJwt, imageMiddleware } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
 var express = require('express');
 var router = express.Router();
@@ -18,14 +18,16 @@ var storage = multer.diskStorage({
     
 });
 
+var memStorage = multer.memoryStorage();
 
 
-var upload = multer({ storage: storage});
+// var upload = multer({ storage: storage});
+var upload = multer({ storage: memStorage});
 
 /* api */
-router.post('/signup', [upload.single('image'),verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail], controller.signup);
+router.post('/signup', [upload.single('image'),verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail, imageMiddleware.uploadImage], controller.signup);
 router.post('/signup/employe', 
-    [authJwt.verifyToken, authJwt.estAdmin, verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail, verifySignUp.checkGroupesExist], 
+    [authJwt.verifyToken, authJwt.estAdmin, upload.single('image'), verifySignUp.validateRequestBody, verifySignUp.checkDuplicateEmail, imageMiddleware.uploadImage], 
     controller.signupEmploye);
 router.post('/signin', [verifySignIn.validateRequestBody], controller.signin);
 // router.post('/signout', controller.signout);

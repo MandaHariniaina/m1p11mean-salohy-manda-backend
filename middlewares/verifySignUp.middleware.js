@@ -4,6 +4,8 @@ const User = db.user;
 const yup = require('yup');
 
 validateRequestBody = async (req, res, next) => {
+    const parseBody=JSON.parse(JSON.stringify(req.body));
+    const getUser=JSON.parse(parseBody.user);
     try {
         const signUpSchema = yup.object().shape({
             nom: yup.string().lowercase().required(),
@@ -23,16 +25,21 @@ validateRequestBody = async (req, res, next) => {
                 .oneOf([yup.ref('password')], 'Les mots de passe doivent se ressembler')
                 .required("Confirmation mot de passe requis")
         });
-        const validatedBody = await signUpSchema.validate(req.body);
+        // const validatedBody = await signUpSchema.validate(req.body);
+        const validatedBody = await signUpSchema.validate(getUser);
         req.body = validatedBody;
         next();
     } catch (error) {
+        console.log(error)
         res.status(400).send({ message: error.errors });
         return;
     }
 };
 
 checkDuplicateEmail = async (req, res, next) => {
+    // console.log(req.body);
+    // const getUser=JSON.parse(req.body.user);
+    // let userExists = await User.exists({ email: getUser.email })
     const user = req.body;
     let userExists = await User.exists({ email: user.email })
     if (userExists) {

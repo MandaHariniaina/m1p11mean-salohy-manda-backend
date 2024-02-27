@@ -46,7 +46,8 @@ exports.signupEmploye = async (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
         salt: "random-salt",
-        image: req.file.filename
+        // image: req.file.filename
+        image: req.body.image
     });
 
     try {
@@ -76,7 +77,8 @@ exports.signup = async (req, res) => {
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
         salt: "random-salt",
-        image: req.file.filename
+        // image: req.file.filename
+        image: req.body.image
     });
     try {
             user = await user.save({ session: session });
