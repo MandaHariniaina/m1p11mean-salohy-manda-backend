@@ -75,7 +75,7 @@ exports.find = async (groupe, userId, dateDebut, dateFin, page, limit) => {
     let prestations = await Prestation.paginate(filter, {
         page, limit, sort: { createdAt: 'desc' }, customLabels: config.mongoosePaginate.customLabels, populate: [
             { path: 'gestionnaire', select: 'nom prenom' },
-           
+            { path: 'client', select: 'compte nom prenom' },
         ]
     });
     return prestations;
