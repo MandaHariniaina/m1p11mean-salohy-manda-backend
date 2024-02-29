@@ -52,11 +52,11 @@ exports.validateDeleteRequestBody = async (req, res, next) => {
                     return '';
                 }),
         });
-        const validatedBody = await validationSchema.validate(req.body);
-        req.body = validatedBody;
+        const validatedBody = await validationSchema.validate(req.query);
+        req.query = validatedBody;
         // Validation rendezVous.client === req.user
-        const rendezVous = await RendezVous.findById(req.body.id);
-        if (rendezVous.client !== req.user._id) {
+        const rendezVous = await RendezVous.findById(req.query.id);
+        if (rendezVous.client !== req.user._id || rendezVous.gestionnaire!==req.user._id) {
             res.status(401).send({ message: "Vous n'êtes pas autorisé à effectuer cette action" });
         }
         next();
