@@ -6,6 +6,7 @@ const Service = db.service;
 const config = require("../config");
 const User = db.user;
 const mongoose = require("mongoose");
+const { log } = require("handlebars");
 
 exports.createPrestation = async (id) => {
     const session = await mongoose.startSession();
@@ -110,6 +111,7 @@ exports.findByClient = async (userId, q = "", page, limit) => {
 exports.findByGestionnaire = async (userId, q = "", page, limit) => {
     const groupeClient = await Groupe.findOne({ nom: 'client' });
     const regex = new RegExp(`.*${q}.*`, 'i');
+    console.log(q);
     // Client filtre
     const clients = await User.find({ nom: regex, groupes: { $in: groupeClient } }).select("id");
     var clientIds = [];
@@ -122,15 +124,52 @@ exports.findByGestionnaire = async (userId, q = "", page, limit) => {
     services.forEach( service => {
         serviceIds.push(service._id);
     });
-
-    return await RendezVous.paginate(
-        { 
+    let objFilter={}
+    if(q=="en cours" && q!="traite" && q!="tout"){
+        console.log("tonga1");
+        objFilter={
+            gestionnaire: userId,
+            $or: [
+              
+                { 'estRealise': false },
+               
+              
+            ]
+        }
+    }
+    if(q=="traite"&& q!="en cours" && q!="tout"){
+        console.log("tonga2");
+        objFilter={
+            gestionnaire: userId,
+            $or: [
+              
+                { 'estRealise': true },
+               
+              
+            ]
+        }
+    }
+    if(q!="traite" && q!="en cours" && q!="tout"){
+        console.log("tonga3");
+        objFilter= { 
             gestionnaire: userId,
             $or: [
                 { client: { $in: clientIds } },
-                { 'prestations.service': {$in: serviceIds} }
+                { 'prestations.service': {$in: serviceIds} },
+               
+              
             ]
-        }, 
+        }
+    }
+    if(q=="tout"){
+        console.log("tonga4");
+        objFilter= { 
+            gestionnaire: userId,
+        }
+    }
+    //console.log(objFilter);
+    return await RendezVous.paginate(
+       objFilter, 
         { 
             page, 
             limit, 
