@@ -56,7 +56,9 @@ exports.validateDeleteRequestBody = async (req, res, next) => {
         req.query = validatedBody;
         // Validation rendezVous.client === req.user
         const rendezVous = await RendezVous.findById(req.query.id);
-        if (rendezVous.client !== req.user._id || rendezVous.gestionnaire!==req.user._id) {
+        console.log(rendezVous);
+        console.log(req.user._id);
+        if ( rendezVous.gestionnaire!=req.user._id) {
             res.status(401).send({ message: "Vous n'êtes pas autorisé à effectuer cette action" });
         }
         next();

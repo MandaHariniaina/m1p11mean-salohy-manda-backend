@@ -15,7 +15,7 @@ exports.createPrestation = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
-        await rendezVousService.delete(req.body.id);
+        await rendezVousService.delete(req.query.id);
         return res.status(200).send({ message: "Rendez vous supprimé." });
     } catch (error) {
         return res.status(500).send({ message: error.message });
